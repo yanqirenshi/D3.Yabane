@@ -1,0 +1,9 @@
+var data = [30, 86, 168, 281, 303, 365];
+
+var data2 = [
+    {code: '1', name: 'a', start: null, end: null, detail: []},
+    {code: '2', name: 'b', start: null, end: null, detail: []},
+    {code: '3', name: 'c', start: null, end: null, detail: []},
+    {code: '4', name: 'd', start: null, end: null, detail: []},
+    {code: '5', name: 'e', start: null, end: null, detail: []},
+];
