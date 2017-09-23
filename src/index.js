@@ -32,7 +32,7 @@ function makeScaleData (data) {
 function start (data) {
     var scale_data = makeScaleData(data);
 
-    scale.x = buildAxis_x(new Date(scale_data.start), new Date(scale_data.end), 0, 88);
+    scale.x = buildAxis_x(scale_data.start, scale_data.end, 0, 88);
 
     d3.select("svg.chart-yabane")
       .attr('width', 999)
