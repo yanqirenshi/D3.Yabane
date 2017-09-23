@@ -8,11 +8,31 @@ var lane = {
     padding: 5
 };
 
+function makeScaleData (data) {
+    var out = {
+        start: null,
+        end: null
+    }
+
+    for (var i in data) {
+        var d = data[i];
+        var start = d.start;
+        var end = d.end;
+
+        if (out.start==null || out.start > d.start) 
+            out.start = start;
+
+        if (out.end==null || out.end < end) 
+            out.end = end;
+    }
+
+    return out;
+}
+
 function start (data) {
-    var start = new Date(2000, 0, 1, 0);
-    var end = new Date(2000, 0, 1, 31);
-    console.log(start);
-    scale.x = buildAxis_x(start, end, 0, 33);
+    var scale_data = makeScaleData(data);
+
+    scale.x = buildAxis_x(new Date(scale_data.start), new Date(scale_data.end), 0, 88);
 
     d3.select("svg.chart-yabane")
       .attr('width', 999)
