@@ -8,7 +8,7 @@ var lane = {
     padding: 5
 };
 
-function start () {
+function start (data) {
     var start = new Date(2000, 0, 1, 0);
     var end = new Date(2000, 0, 1, 31);
     console.log(start);
@@ -16,16 +16,16 @@ function start () {
 
     d3.select("svg.chart-yabane")
       .attr('width', 999)
-      .attr('height', (lane.h * data2.length));
+      .attr('height', (lane.h * data.length));
 
-    drawLane();
-    drawYabane();
+    drawLane(data);
+    drawYabane(data);
 }
 
-function drawLane() {
+function drawLane(data) {
     d3.select("svg.chart-yabane")
       .selectAll("rect.lane")
-      .data(data2)
+      .data(data)
       .enter()
       .append("rect")
       .attr('class','lane')
@@ -39,10 +39,10 @@ function drawLane() {
       .attr('stroke-width', '2');
 }
 
-function drawYabane() {
+function drawYabane(data) {
     d3.select("svg.chart-yabane")
       .selectAll("polygon")
-      .data(data2)
+      .data(data)
       .enter()
       .append("polygon")
       .attr("points", function (d, i) {
