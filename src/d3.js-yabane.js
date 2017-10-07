@@ -1,20 +1,26 @@
+/**
+ * @args from, to, data-list
+ */
 function D3jsYabane(d3, selector, config) {
     this.d3 = d3;
     this.selector = selector;
 
     var tmp = {
+        /* d3.js の scale を保持する。 y って必要か？自作か？ */
         scale: {
             x: null,
             y: null
         },
         lane: {
-            h: 33,
+            h: 33,     /* h は一旦この値固定で */
+            w: null,   /* こいつは無視されます。 自動計算されます。*/
+            tick: 33,  /* これと日数を掛けて w を算出します */
             padding: 5
         },
         axis: {
             x: {
                 cell: {
-                    w: 33
+                    w: 33 /* これ使ってる？ */
                 }
             }
         }
@@ -23,13 +29,26 @@ function D3jsYabane(d3, selector, config) {
     this.config = this.merge(tmp, config);
 }
 
+/*** ***************************** *
+ *** UTIL 
+ *** ***************************** */
+
+/**
+ * merge
+ */
 D3jsYabane.prototype.merge = function (state, newState) {
     return Object.assign( {}, state, newState);
 };
+/**
+ * point
+ */
 D3jsYabane.prototype.point = function (x, y) {
     return x + ', ' + y + ' ';
 };
-/* Scale */
+
+/*** ***************************** *
+ *** Scale
+ *** ***************************** */
 D3jsYabane.prototype.makeScaleData = function (data) {
     var out = {
         start: null,
@@ -62,14 +81,31 @@ D3jsYabane.prototype.buildAxis_x = function (start, end, x1, x2) {
         .domain([start, end])
         .range([x1, x2]);
 };
-/* Draw */
+
+/*** ***************************** *
+ *** Size
+ *** ***************************** */
+// D3jsYabane.prototype.yabane_h = function () {};
+// D3jsYabane.prototype.yabane_w = function () {};
+// D3jsYabane.prototype.cell_h = function () {};
+// D3jsYabane.prototype.cell_w = function () {};
+// D3jsYabane.prototype.lane_h = function () {};
+// D3jsYabane.prototype.lane_w = function () {};
+D3jsYabane.prototype.svg_h = function () {};
+D3jsYabane.prototype.svg_w = function () {
+
+};
+
+/*** ***************************** *
+ *** Draw
+ *** ***************************** */
 D3jsYabane.prototype.draw = function (data) {
     var scale_data = this.makeScaleData(data);
 
     this.config.scale.x = this.buildAxis_x(scale_data.start, scale_data.end, 0, 999);
 
     this.d3.select("svg.chart-yabane")
-        .attr('width', 999)
+        .attr('width', this.svg_w())
         .attr('height', (this.config.lane.h * (data.length + 1)));
 
     this.drawLane(data);
