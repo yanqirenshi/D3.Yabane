@@ -29,6 +29,10 @@ D3.js で 描く矢羽のマスタスケジュールです。
         y: null,
         start: null,
         end: null,
+        margin: {
+            before: 2,
+            after: 8
+        },
         dates: []
     },
     lane: {
@@ -44,13 +48,31 @@ D3.js で 描く矢羽のマスタスケジュールです。
 
 ### scale
 
-| val   | description     |
-|-------|-----------------|
-| x     |                 |
-| y     |                 |
-| start |                 |
-| end   |                 |
-| dates |                 |
+| val    | description     |
+|--------|-----------------|
+| x      |                 |
+| y      |                 |
+| start  |                 |
+| end    |                 |
+| margin |                 |
+| dates  |                 |
+
+#### x
+#### y
+#### start
+#### end
+#### margin
+- before, after を指定します。
+- before=2, after=8 が初期値です。
+- 整数で指定します。
+
+#### dates
+
+
+
+
+
+
 
 ### lane
 
