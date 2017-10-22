@@ -36,6 +36,8 @@ D3.js で 描く矢羽のマスタスケジュールです。
     header: {
         h: 33,
         padding: 5,
+        fill: {},
+        stroke: {},
         font: {}
     },
     lane: {
@@ -81,11 +83,13 @@ D3.js で 描く矢羽のマスタスケジュールです。
 
 ### lane
 
-| val     | description     |
-|---------|-----------------|
-| h       |                 |
-| w       |                 |
-| padding |                 |
+| val     | description |
+|---------+-------------|
+| h       |             |
+| w       |             |
+| padding |             |
+| fill    |             |
+| stroke  |             |
 
 #### cycle
 

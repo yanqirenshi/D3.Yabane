@@ -30,9 +30,16 @@ function D3jsYabane(d3, selector, config) {
             }
         },
         lane: {
-            h: 33,     /* h は一旦この値固定で */
+            h: 33,
             w: null,   /* こいつは無視されます。 自動計算されます。*/
-            padding: 5
+            padding: 5,
+            fill: {
+                color: '#fafafa'
+            },
+            stroke: {
+                color: '#99ab4e',
+                width: 1
+            }
         },
         yabane: {
             color: {
@@ -327,9 +334,9 @@ D3jsYabane.prototype.drawLane = function (conf) {
         .attr('y', function (d,i){
             return (conf.lane.h * i) + conf.header.h;
         })
-        .attr('stroke', '#99ab4e')
-        .attr('fill', '#fff')
-        .attr('stroke-width', '1');
+        .attr('stroke', conf.lane.stroke.color)
+        .attr('stroke-width', conf.lane.stroke.width)
+        .attr('fill', conf.lane.fill.color);
 };
 D3jsYabane.prototype.drawYabane = function (conf) {
     var yabane = this.d3.select(this.selector)
