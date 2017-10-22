@@ -317,32 +317,55 @@ D3jsYabane.prototype.drawYabaneBase = function (yabane, conf) {
 D3jsYabane.prototype.drawYabaneText = function (yabane, conf, lane) {
     var me = this;
 
-    yabane.append("a")
-        .attr("x", function(d) {
-            return me.yabane_x(d) + 11;
-        })
-        .attr("y", function(d, i) {
-            return me.yabane_y(i) + 20 - 5;
-        })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", function (d) {
-            return lane.h - (lane.padding*3) - (3*2);
-        })
-        .attr("fill", "black");
+    var link = yabane.append("a");
 
-    yabane.append("text")
-        .attr("x", function(d) {
+    link
+        .attr('href', function (d) {
+            if (d.uri)
+                return d.uri;
+            return null;
+        })
+        .attr('target', function (d) {
+            if (d.uri)
+                return '_blank';
+            return null;
+        });
+
+    link.append('text')
+        .attr('x', function(d) {
             return me.yabane_x(d) + 11;
         })
-        .attr("y", function(d, i) {
+        .attr('y', function(d, i) {
             return me.yabane_y(i) + 20 - 5;
         })
+        .attr('font-family', conf.font.family)
+        .attr('font-size', function (d) {
+            if (!conf.font.size)
+                return lane.h - (lane.padding*3) - (3*2);
+
+            return conf.font.size;
+        })
+        .attr('fill', 'black')
         .text( function (d) {
-            return '[' + d.code + '] ' + d.name;
+            return '[' + d.code + ']';
+        });
+
+    yabane.append('text')
+        .attr('x', function(d) {
+            return me.yabane_x(d) + 11 + 30;
         })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", function (d) {
-            return lane.h - (lane.padding*3) - (3*2);
+        .attr('y', function(d, i) {
+            return me.yabane_y(i) + 20 - 5;
         })
-        .attr("fill", "black");
+        .attr('font-family', conf.font.family)
+        .attr('font-size', function (d) {
+            if (!conf.font.size)
+                return lane.h - (lane.padding*3) - (3*2);
+
+            return conf.font.size;
+        })
+        .attr('fill', 'black')
+        .text( function (d) {
+            return d.name;
+        });
 };
