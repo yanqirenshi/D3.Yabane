@@ -7,6 +7,8 @@ function D3jsYabane(d3, selector, config) {
 
     var tmp = {
         /* d3.js の scale を保持する。 y って必要か？自作か？ */
+        cycle: 'w',
+        tick: 88,
         scale: {
             x: null,
             y: null,
@@ -28,10 +30,8 @@ function D3jsYabane(d3, selector, config) {
             }
         },
         lane: {
-            cycle: 'w',
             h: 33,     /* h は一旦この値固定で */
             w: null,   /* こいつは無視されます。 自動計算されます。*/
-            tick: 88,  /* これと日数を掛けて w を算出します */
             padding: 5
         },
         yabane: {
@@ -58,8 +58,8 @@ function D3jsYabane(d3, selector, config) {
     tmp.scale = this.merge(tmp.scale, config.scale);
     tmp.lane = this.merge(tmp.lane, config.lane);
 
-    tmp.lane.cycle
-        = this.checkLaneCycle(tmp.lane.cycle);
+    tmp.cycle
+        = this.checkLaneCycle(tmp.cycle);
     tmp.scale.margin
         = this.checkScaleMargin(tmp.scale.margin);
 
@@ -140,13 +140,13 @@ D3jsYabane.prototype.makeScaleData = function (config, data) {
     // start & end
     out.start = new Date(out.start);
     out.end = new Date(out.end);
-    var tick_interval = (config.lane.cycle=='w' ? 7 : 1);
+    var tick_interval = (config.cycle=='w' ? 7 : 1);
 
     out.start = this.makeScaleDataFixDate('before', out.start, tick_interval, config.scale.margin.before);
     out.end = this.makeScaleDataFixDate('after', out.end, tick_interval, config.scale.margin.after);
 
     // datas
-    if (config.lane.cycle=='w') {
+    if (config.cycle=='w') {
         // start
         var dayOfWeek = out.start.getDay();
         if (dayOfWeek==0)
@@ -200,13 +200,13 @@ D3jsYabane.prototype.lane_h = function (data) {
     return this.config.lane.h * data.length;
 };
 D3jsYabane.prototype.lane_w = function (dates) {
-    return this.config.lane.tick * dates.length;
+    return this.config.tick * dates.length;
 };
 D3jsYabane.prototype.svg_h = function (data) {
     return this.lane_h(data) + this.config.header.h;
 };
 D3jsYabane.prototype.svg_w = function (dates) {
-    return this.config.lane.tick * dates.length;
+    return this.config.tick * dates.length;
 };
 
 /*** ***************************** *
