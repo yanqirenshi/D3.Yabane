@@ -47,6 +47,14 @@ D3jsYabane.prototype.point = function (x, y) {
 /*** ***************************** *
  *** Scale
  *** ***************************** */
+D3jsYabane.prototype.initConfig = function (data) {
+    this.config.data = data;
+
+    var scale_data = this.makeScaleData(this.config, data);
+    this.config.scale.start = scale_data.start;
+    this.config.scale.end = scale_data.end;
+    this.config.scale.dates = scale_data.list;
+};
 D3jsYabane.prototype.makeScaleData = function (config, data) {
     var out = {
         start: null,
@@ -141,14 +149,6 @@ D3jsYabane.prototype.svg_w = function (dates) {
 /*** ***************************** *
  *** Draw
  *** ***************************** */
-D3jsYabane.prototype.initConfig = function (data) {
-    this.config.data = data;
-
-    var scale_data = this.makeScaleData(this.config, data);
-    this.config.scale.start = scale_data.start;
-    this.config.scale.end = scale_data.end;
-    this.config.scale.dates = scale_data.list;
-};
 D3jsYabane.prototype.draw = function (data) {
     this.initConfig(data);
     this.drawCore(this.merge({},this.config));
@@ -300,6 +300,23 @@ D3jsYabane.prototype.drawYabane = function (conf) {
                 'start: ' + d.start + '\n' +
                 'end  : ' + d.end;
         });
+    this.drawYabaneText(yabane, lane);
+};
+D3jsYabane.prototype.drawYabaneText = function (yabane, lane) {
+    var me = this;
+
+    yabane.append("a")
+        .attr("x", function(d) {
+            return me.yabane_x(d) + 11;
+        })
+        .attr("y", function(d, i) {
+            return me.yabane_y(i) + 20 - 5;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", function (d) {
+            return lane.h - (lane.padding*3) - (3*2);
+        })
+        .attr("fill", "black");
 
     yabane.append("text")
         .attr("x", function(d) {
@@ -316,5 +333,4 @@ D3jsYabane.prototype.drawYabane = function (conf) {
             return lane.h - (lane.padding*3) - (3*2);
         })
         .attr("fill", "black");
-
 };
