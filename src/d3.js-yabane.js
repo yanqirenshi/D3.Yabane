@@ -12,6 +12,10 @@ function D3jsYabane(d3, selector, config) {
             y: null,
             start: null,
             end: null,
+            margin: {
+                before: 2,
+                after: 8
+            },
             dates: []
         },
         lane: {
@@ -42,12 +46,28 @@ function D3jsYabane(d3, selector, config) {
         data: []
     };
 
+    tmp.lane = this.merge(tmp.scale, config.scale);
     tmp.lane = this.merge(tmp.lane, config.lane);
+
+    tmp.lane.cycle
+        = this.checkLaneCycle(tmp.lanecycle);
+
     this.config = this.merge({}, tmp);
 }
+D3jsYabane.prototype.checkLaneCycle = function (val) {
+
+    var out = 'w';
+
+    switch (val){
+    case 'weekly': return 'w';
+    case 'd': return 'd';
+    case 'daily': return 'd';
+    }
+    return out;
+};
 
 /*** ***************************** *
- *** UTIL 
+ *** UTIL
  *** ***************************** */
 
 /**
@@ -66,20 +86,7 @@ D3jsYabane.prototype.point = function (x, y) {
 /*** ***************************** *
  *** Scale
  *** ***************************** */
-D3jsYabane.prototype.checkLaneCycle = function (val) {
-    var out = 'w';
-
-    switch (val){
-    case 'weekly': return 'w';
-    case 'd': return 'd';
-    case 'daily': return 'd';
-    }
-    return out;
-};
 D3jsYabane.prototype.initConfig = function (data) {
-    this.config.lane.cycle
-        = this.checkLaneCycle(this.config.lane.cycle);
-
     this.config.data = data;
 
     var scale_data = this.makeScaleData(this.config, data);
