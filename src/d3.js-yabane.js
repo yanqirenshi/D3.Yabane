@@ -18,6 +18,15 @@ function D3jsYabane(d3, selector, config) {
             },
             dates: []
         },
+        header: {
+            h: 33,
+            padding: 5,
+            font: {
+                family: 'sans-serif',
+                size: null,
+                color: 'black'
+            }
+        },
         lane: {
             cycle: 'w',
             h: 33,     /* h は一旦この値固定で */
@@ -185,7 +194,7 @@ D3jsYabane.prototype.yabane_x = function (d) {
 };
 D3jsYabane.prototype.yabane_y = function (i) {
     var lane = this.config.lane;
-    return (lane.h * i) + lane.h + lane.padding;
+    return (lane.h * i) + this.config.header.h + lane.padding;
 };
 D3jsYabane.prototype.lane_h = function (data) {
     return this.config.lane.h * data.length;
@@ -194,8 +203,7 @@ D3jsYabane.prototype.lane_w = function (dates) {
     return this.config.lane.tick * dates.length;
 };
 D3jsYabane.prototype.svg_h = function (data) {
-    var header_h = this.config.lane.h;
-    return this.lane_h(data) + header_h;
+    return this.lane_h(data) + this.config.header.h;
 };
 D3jsYabane.prototype.svg_w = function (dates) {
     return this.config.lane.tick * dates.length;
@@ -236,16 +244,19 @@ D3jsYabane.prototype.drawLaneHeader = function (conf) {
         .append("text")
         .attr('class','lane-header-text')
         .attr('x', function (d) {
-            return scale.x(d) + 5;
+            return scale.x(d) + conf.header.padding;
         })
         .attr('y',function (d) {
-            return 22;
+            return conf.header.h - (conf.header.padding * 2);
         })
-        .attr("font-family", "sans-serif")
+        .attr("font-family", conf.header.font.family)
         .attr("font-size", function (d) {
-            return lane.h - (lane.padding*2) - (3*2) - 5;
+            var size = conf.header.font.size;
+            if (!size)
+                return conf.header.h - (conf.header.padding*2) - (3*2) - 5;
+            return size;
         })
-        .attr("fill", "black")
+        .attr("fill", conf.header.font.color)
         .text( function (d) {
             var dayOfWeek = d.getDay();
             var dayOfWeekStr = [ "日", "月", "火", "水", "木", "金", "土" ][dayOfWeek];
@@ -314,7 +325,7 @@ D3jsYabane.prototype.drawLane = function (conf) {
         .attr('width', me.lane_w(conf.scale.dates))
         .attr('height', conf.lane.h)
         .attr('y', function (d,i){
-            return (conf.lane.h * i) + conf.lane.h;
+            return (conf.lane.h * i) + conf.header.h;
         })
         .attr('stroke', '#99ab4e')
         .attr('fill', '#fff')
