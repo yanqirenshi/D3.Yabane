@@ -20,6 +20,24 @@ function D3jsYabane(d3, selector, config) {
             tick: 88,  /* これと日数を掛けて w を算出します */
             padding: 5
         },
+        yabane: {
+            color: {
+                font: '#000',
+                background: ''
+            },
+            fill: {
+                color: '#aacf53',
+                opacity: 0.88
+            },
+            stroke: {
+                color: '#99ab4e',
+                width: 1
+            },
+            font: {
+                family: 'sans-serif',
+                size: null
+            }
+        },
         data: []
     };
 
@@ -266,14 +284,17 @@ D3jsYabane.prototype.drawLane = function (conf) {
         .attr('stroke-width', '1');
 };
 D3jsYabane.prototype.drawYabane = function (conf) {
-    var lane = conf.lane;
-    var scale = conf.scale;
     var me = this;
     var yabane = this.d3.select(this.selector)
                      .selectAll("polygon")
                      .data(conf.data)
                      .enter();
 
+    this.drawYabaneBase(yabane, conf.yabane);
+    this.drawYabaneText(yabane, conf.lane);
+};
+D3jsYabane.prototype.drawYabaneBase = function (yabane, conf) {
+    var me = this;
     yabane.append("polygon")
           .attr("points", function (d, i) {
               var start = new Date(d.start);
@@ -289,18 +310,10 @@ D3jsYabane.prototype.drawYabane = function (conf) {
                    + me.point((x+w-head) , (y+h))
                    + me.point(x          , (y+h));
         })   // xy座標を複数指定
-        .attr('stroke', '#99ab4e')
-        .attr('fill', '#aacf53')
-        .attr('stroke-width', 1)
-        .attr('fill-opacity', 0.88)
-        .append("title")
-        .text(function(d){
-            return 'code: ' + d.code + '\n' +
-                'name: ' + d.name + '\n' +
-                'start: ' + d.start + '\n' +
-                'end  : ' + d.end;
-        });
-    this.drawYabaneText(yabane, lane);
+        .attr('stroke', conf.stroke.color)
+        .attr('stroke-width', conf.stroke.width)
+        .attr('fill', conf.fill.color)
+        .attr('fill-opacity', conf.fill.opacity);
 };
 D3jsYabane.prototype.drawYabaneText = function (yabane, lane) {
     var me = this;
