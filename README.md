@@ -20,6 +20,48 @@ D3.js で 描く矢羽のマスタスケジュールです。
 <script>start(data);</script>
 ```
 
+## Config
+
+```javascript
+{
+    scale: {
+        x: null,
+        y: null,
+        start: null,
+        end: null,
+        dates: []
+    },
+    lane: {
+        h: 33,
+        w: null,
+        tick: 88,
+        padding: 5
+    },
+    data: []
+};
+```
+
+### scale
+
+| val   | description     |
+|-------|-----------------|
+| x     |                 |
+| y     |                 |
+| start |                 |
+| end   |                 |
+| dates |                 |
+
+### lane
+
+| val     | description     |
+|---------|-----------------|
+| h       |                 |
+| w       |                 |
+| tick    |                 |
+| padding |                 |
+
+### data
+
 # データ構造
 
 ## データ
@@ -39,3 +81,4 @@ data=[ {矢羽} ... ]
     "detail": [ {矢羽}... ], 
 }
 ```
+

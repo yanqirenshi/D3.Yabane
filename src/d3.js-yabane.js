@@ -20,6 +20,24 @@ function D3jsYabane(d3, selector, config) {
             tick: 88,  /* これと日数を掛けて w を算出します */
             padding: 5
         },
+        yabane: {
+            color: {
+                font: '#000',
+                background: ''
+            },
+            fill: {
+                color: '#aacf53',
+                opacity: 0.88
+            },
+            stroke: {
+                color: '#99ab4e',
+                width: 1
+            },
+            font: {
+                family: 'sans-serif',
+                size: null
+            }
+        },
         data: []
     };
 
@@ -47,6 +65,14 @@ D3jsYabane.prototype.point = function (x, y) {
 /*** ***************************** *
  *** Scale
  *** ***************************** */
+D3jsYabane.prototype.initConfig = function (data) {
+    this.config.data = data;
+
+    var scale_data = this.makeScaleData(this.config, data);
+    this.config.scale.start = scale_data.start;
+    this.config.scale.end = scale_data.end;
+    this.config.scale.dates = scale_data.list;
+};
 D3jsYabane.prototype.makeScaleData = function (config, data) {
     var out = {
         start: null,
@@ -141,14 +167,6 @@ D3jsYabane.prototype.svg_w = function (dates) {
 /*** ***************************** *
  *** Draw
  *** ***************************** */
-D3jsYabane.prototype.initConfig = function (data) {
-    this.config.data = data;
-
-    var scale_data = this.makeScaleData(this.config, data);
-    this.config.scale.start = scale_data.start;
-    this.config.scale.end = scale_data.end;
-    this.config.scale.dates = scale_data.list;
-};
 D3jsYabane.prototype.draw = function (data) {
     this.initConfig(data);
     this.drawCore(this.merge({},this.config));
@@ -266,14 +284,16 @@ D3jsYabane.prototype.drawLane = function (conf) {
         .attr('stroke-width', '1');
 };
 D3jsYabane.prototype.drawYabane = function (conf) {
-    var lane = conf.lane;
-    var scale = conf.scale;
-    var me = this;
     var yabane = this.d3.select(this.selector)
                      .selectAll("polygon")
                      .data(conf.data)
                      .enter();
 
+    this.drawYabaneBase(yabane, conf.yabane);
+    this.drawYabaneText(yabane, conf.yabane, conf.lane);
+};
+D3jsYabane.prototype.drawYabaneBase = function (yabane, conf) {
+    var me = this;
     yabane.append("polygon")
           .attr("points", function (d, i) {
               var start = new Date(d.start);
@@ -289,32 +309,63 @@ D3jsYabane.prototype.drawYabane = function (conf) {
                    + me.point((x+w-head) , (y+h))
                    + me.point(x          , (y+h));
         })   // xy座標を複数指定
-        .attr('stroke', '#99ab4e')
-        .attr('fill', '#aacf53')
-        .attr('stroke-width', 1)
-        .attr('fill-opacity', 0.88)
-        .append("title")
-        .text(function(d){
-            return 'code: ' + d.code + '\n' +
-                'name: ' + d.name + '\n' +
-                'start: ' + d.start + '\n' +
-                'end  : ' + d.end;
+        .attr('stroke', conf.stroke.color)
+        .attr('stroke-width', conf.stroke.width)
+        .attr('fill', conf.fill.color)
+        .attr('fill-opacity', conf.fill.opacity);
+};
+D3jsYabane.prototype.drawYabaneText = function (yabane, conf, lane) {
+    var me = this;
+
+    var link = yabane.append("a");
+
+    link
+        .attr('href', function (d) {
+            if (d.uri)
+                return d.uri;
+            return null;
+        })
+        .attr('target', function (d) {
+            if (d.uri)
+                return '_blank';
+            return null;
         });
 
-    yabane.append("text")
-        .attr("x", function(d) {
+    link.append('text')
+        .attr('x', function(d) {
             return me.yabane_x(d) + 11;
         })
-        .attr("y", function(d, i) {
+        .attr('y', function(d, i) {
             return me.yabane_y(i) + 20 - 5;
         })
-        .text( function (d) {
-            return '[' + d.code + '] ' + d.name;
-        })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", function (d) {
-            return lane.h - (lane.padding*3) - (3*2);
-        })
-        .attr("fill", "black");
+        .attr('font-family', conf.font.family)
+        .attr('font-size', function (d) {
+            if (!conf.font.size)
+                return lane.h - (lane.padding*3) - (3*2);
 
+            return conf.font.size;
+        })
+        .attr('fill', 'black')
+        .text( function (d) {
+            return '[' + d.code + ']';
+        });
+
+    yabane.append('text')
+        .attr('x', function(d) {
+            return me.yabane_x(d) + 11 + 30;
+        })
+        .attr('y', function(d, i) {
+            return me.yabane_y(i) + 20 - 5;
+        })
+        .attr('font-family', conf.font.family)
+        .attr('font-size', function (d) {
+            if (!conf.font.size)
+                return lane.h - (lane.padding*3) - (3*2);
+
+            return conf.font.size;
+        })
+        .attr('fill', 'black')
+        .text( function (d) {
+            return d.name;
+        });
 };
