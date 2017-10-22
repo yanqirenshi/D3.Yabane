@@ -15,6 +15,7 @@ function D3jsYabane(d3, selector, config) {
             dates: []
         },
         lane: {
+            cycle: 'w',
             h: 33,     /* h は一旦この値固定で */
             w: null,   /* こいつは無視されます。 自動計算されます。*/
             tick: 88,  /* これと日数を掛けて w を算出します */

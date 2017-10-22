@@ -32,6 +32,7 @@ D3.js で 描く矢羽のマスタスケジュールです。
         dates: []
     },
     lane: {
+        cycle: 'w',
         h: 33,
         w: null,
         tick: 88,
@@ -55,10 +56,21 @@ D3.js で 描く矢羽のマスタスケジュールです。
 
 | val     | description     |
 |---------|-----------------|
+| cycle   |                 |
 | h       |                 |
 | w       |                 |
 | tick    |                 |
 | padding |                 |
+
+#### cycle
+
+`d`, `w`, `daily`, `weekly` を指定します。
+
+#### h
+#### w
+#### tick
+#### padding
+
 
 ### data
 
