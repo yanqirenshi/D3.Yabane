@@ -284,14 +284,13 @@ D3jsYabane.prototype.drawLane = function (conf) {
         .attr('stroke-width', '1');
 };
 D3jsYabane.prototype.drawYabane = function (conf) {
-    var me = this;
     var yabane = this.d3.select(this.selector)
                      .selectAll("polygon")
                      .data(conf.data)
                      .enter();
 
     this.drawYabaneBase(yabane, conf.yabane);
-    this.drawYabaneText(yabane, conf.lane);
+    this.drawYabaneText(yabane, conf.yabane, conf.lane);
 };
 D3jsYabane.prototype.drawYabaneBase = function (yabane, conf) {
     var me = this;
@@ -315,7 +314,7 @@ D3jsYabane.prototype.drawYabaneBase = function (yabane, conf) {
         .attr('fill', conf.fill.color)
         .attr('fill-opacity', conf.fill.opacity);
 };
-D3jsYabane.prototype.drawYabaneText = function (yabane, lane) {
+D3jsYabane.prototype.drawYabaneText = function (yabane, conf, lane) {
     var me = this;
 
     yabane.append("a")
