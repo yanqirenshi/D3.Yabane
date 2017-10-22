@@ -29,11 +29,13 @@ D3.js で 描く矢羽のマスタスケジュールです。
         y: null,
         start: null,
         end: null,
-        margin: {
-            before: 2,
-            after: 8
-        },
+        margin: {},
         dates: []
+    },
+    header: {
+        h: 33,
+        padding: 5,
+        font: {}
     },
     lane: {
         cycle: 'w',
@@ -41,6 +43,12 @@ D3.js で 描く矢羽のマスタスケジュールです。
         w: null,
         tick: 88,
         padding: 5
+    },
+    yabane: {
+        color: {},
+        fill: {},
+        stroke: {},
+        font: {}
     },
     data: []
 };
@@ -93,6 +101,23 @@ D3.js で 描く矢羽のマスタスケジュールです。
 #### tick
 #### padding
 
+
+### header
+
+| variabl | description |
+|---------+-------------|
+| h       |             |
+| padding |             |
+| font    |             |
+
+### yabane
+
+| variabl | description |
+|---------+-------------|
+| color   |             |
+| fill    |             |
+| stroke  |             |
+| font    |             |
 
 ### data
 
