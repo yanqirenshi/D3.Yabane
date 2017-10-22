@@ -43,7 +43,13 @@
         </div>
 
         <script>
-         var yabane = new D3jsYabane(d3, "svg.chart-yabane", {});
+         var yabane = new D3jsYabane(d3,
+                                     "svg.chart-yabane", {
+                                         lane: {
+                                             tick: 88,
+                                             cycle: 'w'
+                                         }
+                                     });
          yabane.draw(graph_data);
         </script>
     </body>

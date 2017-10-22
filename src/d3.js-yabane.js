@@ -23,7 +23,8 @@ function D3jsYabane(d3, selector, config) {
         data: []
     };
 
-    this.config = this.merge(tmp, config);
+    tmp.lane = this.merge(tmp.lane, config.lane);
+    this.config = this.merge({}, tmp);
 }
 
 /*** ***************************** *
@@ -46,7 +47,7 @@ D3jsYabane.prototype.point = function (x, y) {
 /*** ***************************** *
  *** Scale
  *** ***************************** */
-D3jsYabane.prototype.makeScaleData = function (data) {
+D3jsYabane.prototype.makeScaleData = function (config, data) {
     var out = {
         start: null,
         end: null,
@@ -65,10 +66,38 @@ D3jsYabane.prototype.makeScaleData = function (data) {
             out.end = end;
     }
 
+    out.start = new Date(out.start);
+    out.end = new Date(out.end);
+
+    if (config.lane.cycle=='w') {
+        out.start.setDate(out.start.getDate() - (14*2));
+        out.end.setDate(out.end.getDate() + (14*5));
+    } else {
+        out.start.setDate(out.start.getDate() - 2);
+        out.start.setDate(out.start.getDate() + 5);
+    }
+
+    var cycle_tick_interval = 1;
+    if (config.lane.cycle=='w') {
+        cycle_tick_interval = 7;
+        // start
+        var dayOfWeek = out.start.getDay();
+        if (dayOfWeek==0)
+            out.start.setDate(out.start.getDate() - 6);
+        else
+            out.start.setDate(out.start.getDate() - (dayOfWeek - 1));
+        // end
+        dayOfWeek = out.end.getDay();
+        if (dayOfWeek==0)
+            out.end.setDate(out.end.getDate() + 6);
+        else
+            out.end.setDate(out.end.getDate() + (dayOfWeek - 1));
+    }
+
     var date = new Date(out.start);
     do {
         out.list.push(new Date(date));
-        date.setDate(date.getDate() + 1);
+        date.setDate(date.getDate() + cycle_tick_interval);
     } while (date < out.end);
 
     return out;
@@ -115,7 +144,7 @@ D3jsYabane.prototype.svg_w = function (dates) {
 D3jsYabane.prototype.initConfig = function (data) {
     this.config.data = data;
 
-    var scale_data = this.makeScaleData(data);
+    var scale_data = this.makeScaleData(this.config, data);
     this.config.scale.start = scale_data.start;
     this.config.scale.end = scale_data.end;
     this.config.scale.dates = scale_data.list;
@@ -131,20 +160,21 @@ D3jsYabane.prototype.drawCore = function (conf) {
                                            0,
                                            this.svg_w(conf.scale.dates));
 
-    this.d3.select("svg.chart-yabane")
+    this.d3.select(this.selector)
         .attr('width', this.svg_w(conf.scale.dates))
-        .attr('height', this.svg_h(conf.data));
+        .attr('height', this.svg_h(conf.data) + 5);
 
     this.drawLane(conf);
     this.drawLaneHeader(conf);
     this.drawLaneDateSpliter(conf);
     this.drawYabane(conf);
+    this.drawLaneToday(conf);
 };
 D3jsYabane.prototype.drawLaneHeader = function (conf) {
     var scale = conf.scale;
     var lane = conf.lane;
     var me = this;
-    this.d3.select("svg.chart-yabane")
+    this.d3.select(this.selector)
         .selectAll("rect.lane-line-vertical")
         .data(conf.scale.dates)
         .enter()
@@ -172,14 +202,15 @@ D3jsYabane.prototype.drawLaneDateSpliter = function (conf) {
     var scale = conf.scale;
     var lane = conf.lane;
     var me = this;
-    this.d3.select("svg.chart-yabane")
+    this.d3.select(this.selector)
         .selectAll("rect.lane-line-vertical")
         .data(conf.scale.dates)
         .enter()
         .append("line")
         .attr('class','lane-line-vertical')
         .attr('stroke-width', 1)
-        .attr('stroke', '#000')
+        .attr('stroke', '#99ab4e')
+        .attr('stroke-dasharray', '3 3')
         .attr('x1', function (d, i) {
             return scale.x(d);
         })
@@ -187,11 +218,39 @@ D3jsYabane.prototype.drawLaneDateSpliter = function (conf) {
             return scale.x(d);
         })
         .attr('y1', lane.h)
-        .attr('y2', 1000);
+        .attr('y2', function () {
+            return me.lane_h(conf.data) + lane.h;
+        });
+};
+D3jsYabane.prototype.drawLaneToday = function (conf) {
+    var me = this;
+    var now = new Date();
+
+    var scale = conf.scale;
+    var lane = conf.lane;
+    var me = this;
+    this.d3.select(this.selector)
+        .selectAll("rect.lane-line-vertical")
+        .data(conf.scale.dates)
+        .enter()
+        .append("line")
+        .attr('class','lane-line-vertical')
+        .attr('stroke-width', 1)
+        .attr('stroke', '#e198b4')
+        .attr('x1', function (d, i) {
+            return scale.x(now);
+        })
+        .attr('x2', function (d, i) {
+            return scale.x(now);
+        })
+        .attr('y1', lane.h - 5)
+        .attr('y2', function () {
+            return me.lane_h(conf.data) + lane.h + 5;
+        });
 };
 D3jsYabane.prototype.drawLane = function (conf) {
     var me = this;
-    this.d3.select("svg.chart-yabane")
+    this.d3.select(this.selector)
         .selectAll("rect.lane")
         .data(conf.data)
         .enter()
@@ -204,13 +263,13 @@ D3jsYabane.prototype.drawLane = function (conf) {
         })
         .attr('stroke', '#99ab4e')
         .attr('fill', '#fff')
-        .attr('stroke-width', '2');
+        .attr('stroke-width', '1');
 };
 D3jsYabane.prototype.drawYabane = function (conf) {
     var lane = conf.lane;
     var scale = conf.scale;
     var me = this;
-    var yabane = this.d3.select("svg.chart-yabane")
+    var yabane = this.d3.select(this.selector)
                      .selectAll("polygon")
                      .data(conf.data)
                      .enter();
@@ -230,24 +289,31 @@ D3jsYabane.prototype.drawYabane = function (conf) {
                    + me.point((x+w-head) , (y+h))
                    + me.point(x          , (y+h));
         })   // xy座標を複数指定
-        .attr('stroke', '#006e54')  // 赤色にする
-        .attr('fill', '#38b48b') // 塗りは黄色にする
-        .attr('stroke-width', 1);    // 線幅を指定
-
+        .attr('stroke', '#99ab4e')
+        .attr('fill', '#aacf53')
+        .attr('stroke-width', 1)
+        .attr('fill-opacity', 0.88)
+        .append("title")
+        .text(function(d){
+            return 'code: ' + d.code + '\n' +
+                'name: ' + d.name + '\n' +
+                'start: ' + d.start + '\n' +
+                'end  : ' + d.end;
+        });
 
     yabane.append("text")
         .attr("x", function(d) {
             return me.yabane_x(d) + 11;
         })
         .attr("y", function(d, i) {
-            return me.yabane_y(i) + 20 - 3;
+            return me.yabane_y(i) + 20 - 5;
         })
         .text( function (d) {
             return '[' + d.code + '] ' + d.name;
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", function (d) {
-            return lane.h - (lane.padding*2) - (3*2);
+            return lane.h - (lane.padding*3) - (3*2);
         })
         .attr("fill", "black");
 
