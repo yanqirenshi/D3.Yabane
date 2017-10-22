@@ -46,16 +46,17 @@ function D3jsYabane(d3, selector, config) {
         data: []
     };
 
-    tmp.lane = this.merge(tmp.scale, config.scale);
+    tmp.scale = this.merge(tmp.scale, config.scale);
     tmp.lane = this.merge(tmp.lane, config.lane);
 
     tmp.lane.cycle
-        = this.checkLaneCycle(tmp.lanecycle);
+        = this.checkLaneCycle(tmp.lane.cycle);
+    tmp.scale.margin
+        = this.checkScaleMargin(tmp.scale.margin);
 
     this.config = this.merge({}, tmp);
 }
 D3jsYabane.prototype.checkLaneCycle = function (val) {
-
     var out = 'w';
 
     switch (val){
@@ -63,12 +64,26 @@ D3jsYabane.prototype.checkLaneCycle = function (val) {
     case 'd': return 'd';
     case 'daily': return 'd';
     }
+
     return out;
+};
+D3jsYabane.prototype.checkScaleMargin = function (val) {
+    return {
+        before: this.chekNan(val.before, 2),
+        after: this.chekNan(val.after, 8)
+    };
 };
 
 /*** ***************************** *
  *** UTIL
  *** ***************************** */
+
+D3jsYabane.prototype.chekNan = function (v, defval) {
+    if (!v || isNaN(v))
+        return defval ? defval : null;
+    return v *1;
+};
+
 
 /**
  * merge
@@ -113,20 +128,16 @@ D3jsYabane.prototype.makeScaleData = function (config, data) {
             out.end = end;
     }
 
+    // start & end
     out.start = new Date(out.start);
     out.end = new Date(out.end);
+    var tick_interval = (config.lane.cycle=='w' ? 7 : 1);
 
-    if (config.lane.cycle=='w') {
-        out.start.setDate(out.start.getDate() - (14*2));
-        out.end.setDate(out.end.getDate() + (14*5));
-    } else {
-        out.start.setDate(out.start.getDate() - 2);
-        out.start.setDate(out.start.getDate() + 5);
-    }
+    out.start = this.makeScaleDataFixDate('before', out.start, tick_interval, config.scale.margin.before);
+    out.end = this.makeScaleDataFixDate('after', out.end, tick_interval, config.scale.margin.after);
 
-    var cycle_tick_interval = 1;
+    // datas
     if (config.lane.cycle=='w') {
-        cycle_tick_interval = 7;
         // start
         var dayOfWeek = out.start.getDay();
         if (dayOfWeek==0)
@@ -144,10 +155,15 @@ D3jsYabane.prototype.makeScaleData = function (config, data) {
     var date = new Date(out.start);
     do {
         out.list.push(new Date(date));
-        date.setDate(date.getDate() + cycle_tick_interval);
+        date.setDate(date.getDate() + tick_interval);
     } while (date < out.end);
 
     return out;
+};
+D3jsYabane.prototype.makeScaleDataFixDate = function (type, date,tick_interval,magin) {
+    var vector = (type=='before' ? -1 : 1);
+    date.setDate(date.getDate() + (tick_interval * magin * vector));
+    return date;
 };
 D3jsYabane.prototype.buildAxis_x = function (start, end, x1, x2) {
     return this.d3.scaleTime()
