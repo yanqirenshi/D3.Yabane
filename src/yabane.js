@@ -5,4 +5,7 @@ class Yabane {
     cal_y (scale) {}
     cal_h () {}
     cal_w () {}
+    sizing(scale) {
+        return this;
+    }
 }
