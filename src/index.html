@@ -18,6 +18,8 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script>
 
+        <script src="d3.js-yabane-new.js"></script>
+
         <script src="data.js"></script>
         <script src="d3.js-yabane.js"></script>
     </head>
@@ -51,6 +53,26 @@
                                          }
                                      });
          yabane.draw(graph_data);
+
+         /////
+         ///// New
+         /////
+         let config = {
+             yabane: {
+                 h:88,
+                 margin: 11,
+                 padding: 8,
+                 color: {},
+                 fill: {},
+                 stroke: {},
+                 font: {}
+             }
+         };
+         let yabane_new = new D3jsYabaneNew(config, yabane.config.scale);
+         yabane_new.data(graph_data_new)
+                   .sizing()
+                   .positioning({ x:10, y:10 });
+         dump(graph_data_new);
         </script>
     </body>
 </html>
