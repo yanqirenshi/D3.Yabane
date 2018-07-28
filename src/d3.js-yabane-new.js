@@ -1,14 +1,19 @@
 class D3jsYabaneNew {
-    constructor (config, scale) {
+    constructor (config) {
         this._config = config;
-        this._scale = scale;
+        this._scale = {
+            _x: { start: 0, end: 0},
+            _start: null,
+            _end: null,
+            x: null
+        };
         this._data = [];
     }
     /* **************************************************************** *
      *   Scale
      * **************************************************************** */
     makeScaleX ( x1, x2, start, end) {
-        return this.d3.scaleTime()
+        return d3.scaleTime()
             .domain([start, end])
             .range([x1, x2]);
     }
@@ -70,7 +75,23 @@ class D3jsYabaneNew {
         this.setParent(this._data);
         this.setTerm(this._data);
 
+        // make scale
         let term_min_max = this.getTermMinMax(this._data);
+        let start = moment(term_min_max.start).add(-7, 'd').millisecond(0).second(0).minute(0).hour(0).toDate();
+        let end   = moment(term_min_max.end).add(7, 'd').millisecond(0).second(0).minute(0).hour(0).toDate();
+        let span  = (end - start) / (1000 * 60 * 60 * 24);
+        let tick  = this._config.scale.x.tick;
+
+        this._scale._x = { start: 0, end: span * tick };
+        this._scale._start = start;
+        this._scale._end   = end;
+
+        this._scale = {
+            x: this.makeScaleX(this._scale._x.start,
+                               this._scale._x.end,
+                               this._scale._start,
+                               this._scale._end)
+        };
 
         return this;
     }
@@ -143,5 +164,20 @@ class D3jsYabaneNew {
 
             y = data._h + config.margin;
         }
+        return this;
     }
+    /* **************************************************************** *
+     *   Stage
+     * **************************************************************** */
+    sizingStage (config) {
+        let last_yabane = this._data[this._data.length - 1];
+
+        let h = last_yabane._y + last_yabane._h + config.padding * 2;
+        return this;
+    }
+    makeStage (svg_selector) {
+        return this;
+    }
+    drawGrid () { return this; }
+    drawYabane () { return this; }
 }

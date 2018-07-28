@@ -18,6 +18,8 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script>
 
+        <script src="https://raw.githack.com/moment/moment/develop/moment.js"></script>
+
         <script src="https://raw.githack.com/yanqirenshi/vanilla.js/master/dist/vanilla.js"></script>
 
         <script src="d3.js-yabane-new.js"></script>
@@ -46,6 +48,17 @@
             </div>
         </div>
 
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">D3.js 矢羽 New</h1>
+                    <div style="width:100%;overflow:auto;">
+                        <svg class="chart-yabane-new"></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <script>
          var yabane = new D3jsYabane(d3,
                                      "svg.chart-yabane", {
@@ -60,6 +73,14 @@
          ///// New
          /////
          let config = {
+             scale: {
+                 x: { tick: 88 }
+             },
+             stage: {
+                 padding: 11,
+                 _w: 0,
+                 _h: 0
+             },
              yabane: {
                  h:88,
                  margin: 11,
@@ -70,10 +91,14 @@
                  font: {}
              }
          };
-         let yabane_new = new D3jsYabaneNew(config, yabane.config.scale);
+         let yabane_new = new D3jsYabaneNew(config);
          yabane_new.data(graph_data_new)
                    .sizing()
-                   .positioning({ x:10, y:10 });
+                   .positioning({ x:10, y:10 })
+                   .sizingStage(config.stage)
+                   .makeStage('svg.chart-yabane-new')
+                   .drawGrid()
+                   .drawYabane();
          dump(graph_data_new);
         </script>
     </body>
