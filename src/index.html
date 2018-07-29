@@ -52,7 +52,7 @@
             <div class="hero-body">
                 <div class="container">
                     <h1 class="title">D3.js 矢羽 New</h1>
-                    <div style="width:100%;overflow:auto;">
+                    <div style="overflow:auto;">
                         <svg class="chart-yabane-tmp"></svg>
                     </div>
                 </div>
@@ -60,14 +60,8 @@
         </section>
 
         <script>
-         var yabane = new D3jsYabane(d3,
-                                     "svg.chart-yabane", {
-                                         lane: {
-                                             tick: 88,
-                                             cycle: 'w'
-                                         }
-                                     });
-         yabane.draw(graph_data);
+         /* var yabane = new D3jsYabane(d3, "svg.chart-yabane", { lane: { tick: 88, cycle: 'w' } });
+          * yabane.draw(graph_data); */
 
          /////
          ///// New
@@ -75,11 +69,6 @@
          let config = {
              scale: {
                  x: { tick: 88 }
-             },
-             stage: {
-                 padding: 11,
-                 _w: 0,
-                 _h: 0
              },
              yabane: {
                  h:22,
@@ -91,16 +80,36 @@
                  font: {}
              }
          };
+         let scale = {
+             config: {
+                 x: {
+                     tick: 88,
+                     start: moment().add(-2, 'w').millisecond(0).second(0).minute(0).hour(0),
+                     end:   moment().add( 6, 'M').millisecond(0).second(0).minute(0).hour(0)
+                 }
+             }
+         }
+         let stage = {
+             _id: -10,
+             selector: 'svg.chart-yabane-tmp',
+             padding: 11,
+             _w: 0,
+             _h: 0
+         };
          let yabane_new = new D3jsYabaneNew(config);
-         yabane_new.data(graph_data_new)
+         yabane_new.setScale(scale);
+         yabane_new.setYabanes(graph_data_new)
                    .sizing()
-                   .positioning({ x:10, y:10 })
-                   .sizingStage(config.stage);
-         /* .makeStage('svg.chart-yabane-new')
-          * .drawGrid()
-          * .drawYabane(); */
+                   .positioning({ x:10, y:10 });
 
-         yabane_new.drawProt(graph_data_new);
+         yabane_new.setStage(stage)
+                   .sizingStage();
+
+         yabane_new.drawGroups()
+                   .drawGrid()
+                   .drawYabane();
+
+         // yabane_new.drawProt(graph_data_new);
         </script>
     </body>
 </html>

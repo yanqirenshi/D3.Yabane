@@ -1,21 +1,40 @@
 class D3jsYabaneNew {
     constructor (config) {
         this._config = config;
-        this._scale = {
-            _x: { start: 0, end: 0},
-            _start: null,
-            _end: null,
-            x: null
-        };
         this._data = [];
     }
     /* **************************************************************** *
      *   Scale
      * **************************************************************** */
-    makeScaleX ( x1, x2, start, end) {
-        return d3.scaleTime()
-            .domain([start, end])
-            .range([x1, x2]);
+    fitMonday(d, vector) {
+        let out = moment(d);
+        let week = out.day();
+
+        let val;
+        if (week==0)
+            val = (vector==1) ? 1 : -6;
+        else if (week==1)
+            val = 0;
+        else if (week>=1)
+            val = (vector==1) ? 1 : -6;
+
+        return out.add(val, 'd');
+    }
+    setScale (scale) {
+        this._scale = scale;
+        let start = this.fitMonday(scale.config.x.start, -1);
+        let end   = this.fitMonday(scale.config.x.end,    1);
+
+        let w = end.diff(start, 'weeks') * scale.config.x.tick;
+
+        this._scale.config.x._start = start;
+        this._scale.config.x._end   = end;
+        this._scale.config.x.w      = w;
+
+        this._scale.x = d3
+            .scaleTime()
+            .domain([start.toDate(), end.toDate()])
+            .range([0, w]);
     }
     /* **************************************************************** *
      *   Data
@@ -69,29 +88,11 @@ class D3jsYabaneNew {
 
         return out;
     }
-    data(data) {
+    setYabanes(data) {
         this._data = data;
 
         this.setParent(this._data);
         this.setTerm(this._data);
-
-        // make scale
-        let term_min_max = this.getTermMinMax(this._data);
-        let start = moment(term_min_max.start).add(-7, 'd').millisecond(0).second(0).minute(0).hour(0).toDate();
-        let end   = moment(term_min_max.end).add(7, 'd').millisecond(0).second(0).minute(0).hour(0).toDate();
-        let span  = (end - start) / (1000 * 60 * 60 * 24);
-        let tick  = this._config.scale.x.tick;
-
-        this._scale._x = { start: 0, end: span * tick };
-        this._scale._start = start;
-        this._scale._end   = end;
-
-        this._scale = {
-            x: this.makeScaleX(this._scale._x.start,
-                               this._scale._x.end,
-                               this._scale._start,
-                               this._scale._end)
-        };
 
         return this;
     }
@@ -162,24 +163,133 @@ class D3jsYabaneNew {
             if (data.children)
                 this.positioningChildren(data._y, data.children);
 
-            y = data._h + config.margin;
+            y = y + data._h + config.margin;
         }
         return this;
     }
     /* **************************************************************** *
      *   Stage
      * **************************************************************** */
-    sizingStage (config) {
-        let last_yabane = this._data[this._data.length - 1];
+    setStage (stage) {
+        this._stage = stage;
 
-        let h = last_yabane._y + last_yabane._h + config.padding * 2;
+        this._stage._svg = d3.select(stage.selector);
+
         return this;
     }
-    makeStage (svg_selector) {
+    sizingStage () {
+        let stage = this._stage;
+        let scale = this._scale;
+
+        let last_yabane = this._data[this._data.length - 1];
+        stage._h = last_yabane._y + last_yabane._h + stage.padding * 2;
+
+        let w = scale.config.x.w;
+
+        let svg = stage._svg;
+
+        svg.attr('height', (d) => { return stage._h + 'px'; })
+            .attr('width', () => { return w + 'px';});
+
         return this;
     }
-    drawGrid () { return this; }
-    drawYabane () { return this; }
+    drawGroups () {
+        let stage = this._stage;
+        let svg = stage._svg;
+
+        let g_datas = [
+            { _id: -1, code: 'stage' },
+            { _id: -2, code: 'grid' },
+            { _id: -3, code: 'yabane' }
+        ];
+        for (var i in g_datas)
+            svg.selectAll('g.'+ g_datas[i].code)
+            .data([g_datas[i]], (d) => { return d._id; })
+            .enter()
+            .append('g')
+            .attr('class', g_datas[i].code);
+
+        return this;
+    }
+    drawGrid () {
+        return this;
+    }
+    drawYabane () {
+        let svg = stage._svg;
+
+        let yabanes = {
+            max: 0,
+            list: []
+        };
+        let flatten = (data, list, lev) => {
+            if (!lev) lev = 1;
+            if (data.max < lev) data.max = lev;
+
+            for (var i in list) {
+                let yabane = list[i];
+                yabane._level = lev;
+
+                data.list.push(yabane);
+
+                if (yabane.children && yabane.children.length > 0)
+                    flatten(data, yabane.children, lev + 1);
+            }
+        };
+
+        flatten(yabanes, this._data);
+
+        let point = (x, y) => {
+            return x + ', ' + y + ' ';
+        };
+
+        for (var i=1 ; i <= yabanes.max ; i++ ) {
+            let targets = [];
+
+            for (var j in yabanes.list)
+                if (yabanes.list[j]._level==i)
+                    targets.push(yabanes.list[j]);
+
+            svg.select('g.yabane')
+                .selectAll('polygon.yabane')
+                .data(targets, (d) => { return d.code; })
+                .enter()
+                .append('polygon')
+                .attr('class', 'yabane')
+                .attr('code', (d) => { return d.code; })
+                .attr("points", function (d, i) {
+                    var start = d.start;
+                    var end = d.end;
+                    var h = d._h;
+                    var w = d._w;
+                    var x = d._x;
+                    var y = d._y;
+                    var head = 10;
+                    return point(x          , y)
+                        + point((x+w-head) , y)
+                        + point((x+w)      , (y+(h/2)))
+                        + point((x+w-head) , (y+h))
+                        + point(x          , (y+h));
+                })
+                .attr('fill', (d) => {
+                    if (d._level==1) return '#9d5b8b';
+
+                    return '#9e9e5c';
+                })
+                .attr('fill-opacity', (d) => {
+                    if (d._level==1) return '1';
+                    return '0.8';
+                })
+                .attr('stroke', (d) => {
+                    if (d._level==1) return '#9d5b8b';
+                    return '#9e9e5c';
+                })
+                .attr('stroke-width', (d) => {
+                    if (d._level==1) return '2';
+                    return '1';
+                });
+        }
+        return this;
+    }
     /* **************************************************************** *
      *   Positioning
      * **************************************************************** */
