@@ -22,7 +22,7 @@
 
         <script src="https://raw.githack.com/yanqirenshi/vanilla.js/master/dist/vanilla.js"></script>
 
-        <script src="d3.js-yabane-new.js"></script>
+        <script src="d3.js-yabane.js"></script>
 
         <script src="data.js"></script>
         <script src="d3.js-yabane.js"></script>
@@ -48,24 +48,7 @@
             </div>
         </div>
 
-        <section class="hero">
-            <div class="hero-body">
-                <div class="container">
-                    <h1 class="title">D3.js 矢羽 New</h1>
-                    <div style="overflow:auto;">
-                        <svg class="chart-yabane-tmp"></svg>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <script>
-         /* var yabane = new D3jsYabane(d3, "svg.chart-yabane", { lane: { tick: 88, cycle: 'w' } });
-          * yabane.draw(graph_data); */
-
-         /////
-         ///// New
-         /////
          let config = {
              scale: {
                  x: { tick: 88 }
@@ -94,12 +77,12 @@
          };
          let stage = {
              _id: -10,
-             selector: 'svg.chart-yabane-tmp',
+             selector: 'svg.chart-yabane',
              padding: 11,
              _w: 0,
              _h: 0
          };
-         let yabane_new = new D3jsYabaneNew(config);
+         let yabane_new = new D3jsYabane(config);
          yabane_new.setScale(scale);
          yabane_new.setYabanes(graph_data_new)
                    .sizing()
