@@ -89,6 +89,9 @@
                  }
              }
          }
+         let header = {
+             h: 55
+         };
          let stage = {
              _id: -10,
              selector: 'svg.chart-yabane-tmp',
@@ -102,12 +105,16 @@
                    .sizing()
                    .positioning({ x:10, y:10 });
 
+         yabane_new.setHeader(header)
+                   .sizingHeader();
+
          yabane_new.setStage(stage)
                    .sizingStage();
 
          yabane_new.drawGroups()
                    .drawGrid()
-                   .drawYabane();
+                   .drawYabane()
+                   .drawHeader();
 
          // yabane_new.drawProt(graph_data_new);
         </script>
