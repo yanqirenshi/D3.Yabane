@@ -324,22 +324,46 @@ class D3jsYabaneNew {
                         + point(x          , (y+h));
                 })
                 .attr('fill', (d) => {
-                    if (d._level==1) return '#9d5b8b';
-
-                    return '#9e9e5c';
+                    return (d.children && d.children.length > 0) ? '#eebbcb' : '#aacf53';
                 })
                 .attr('fill-opacity', (d) => {
-                    if (d._level==1) return '1';
-                    return '0.8';
+                    if (d.children && d.children.length > 0)
+                        return '0.2';
+                    return '1';
                 })
                 .attr('stroke', (d) => {
-                    if (d._level==1) return '#9d5b8b';
-                    return '#9e9e5c';
+                    return (d.children && d.children.length > 0) ? '#eebbcb' : '#a8bf93';
                 })
                 .attr('stroke-width', (d) => {
                     if (d._level==1) return '2';
                     return '1';
                 });
+
+            svg.select('g.yabane')
+                .selectAll('text.yabane-label')
+                .data(targets, (d) => { return d.code; })
+                .enter()
+                .append('text')
+                .attr('class', 'yabane-label')
+                .attr('x', (d) => {
+                    if (d.children && d.children.length > 0)
+                        return d._x - 12;
+                    else
+                        return d._x + 12;
+
+                })
+                .attr('y', (d) => {
+                    if (d.children && d.children.length > 0)
+                        return d._y + 2 ;
+                    else
+                        return d._y + 16 ;
+                })
+                .attr('fill', '#333333')
+                .text((d) => {
+                    return d.name + ', Term:' + moment(d.start).format('YYYY-MM-DD') + ' ⇒ ' + moment(d.end).format('YYYY-MM-DD');
+                });
+
+
         }
         return this;
     }
