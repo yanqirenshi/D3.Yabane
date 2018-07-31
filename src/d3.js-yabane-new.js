@@ -210,18 +210,24 @@ class D3jsYabaneNew {
         let stage = this._stage;
         let svg = stage._svg;
 
+        let header_h = this._header.h;
+
         let g_datas = [
-            { _id: -1, code: 'stage' },
-            { _id: -2, code: 'grid' },
-            { _id: -3, code: 'yabane' },
-            { _id: -4, code: 'header' }
+            { _id: -1, code: 'stage',  location: { x:0, y:0 } },
+            { _id: -2, code: 'grid',   location: { x:0, y:header_h } },
+            { _id: -3, code: 'yabane', location: { x:0, y:header_h } },
+            { _id: -4, code: 'header', location: { x:0, y:0 } }
         ];
         for (var i in g_datas)
             svg.selectAll('g.'+ g_datas[i].code)
             .data([g_datas[i]], (d) => { return d._id; })
             .enter()
             .append('g')
-            .attr('class', g_datas[i].code);
+            .attr('class', g_datas[i].code)
+            .attr("transform", (d) => {
+                return "translate(" + d.location.x + "," + d.location.y + ")";
+            });
+        ;
 
         return this;
     }
@@ -340,20 +346,21 @@ class D3jsYabaneNew {
     drawHeader () {
         let header  = this._header;
 
-        let scale_x = this._scale.x;
-        let start   = this._scale.config.x._start;
-        let end     = this._scale.config.x._end;
-        let data    = [];
+        let scale_x   = this._scale.x;
+        let start     = this._scale.config.x._start;
+        let end       = this._scale.config.x._end;
+        let font_size = 12;
+        let data      = [];
 
         while (start.isSameOrBefore(end)) {
             let x = scale_x(start.toDate());
 
             data.push({
-                x:     x,
-                y:     12,
+                x:     x - (font_size/6),
+                y:     font_size,
                 label: start.format('YYYY-MM-DD'),
                 font: {
-                    size: 12
+                    size: font_size
                 }
             });
             start.add('7', 'd');
