@@ -82,24 +82,13 @@
              _w: 0,
              _h: 0
          };
-         let yabane_new = new D3jsYabane(config);
-         yabane_new.setScale(scale);
-         yabane_new.setYabanes(graph_data_new)
-                   .sizing()
-                   .positioning({ x:10, y:10 });
-
-         yabane_new.setHeader(header)
-                   .sizingHeader();
-
-         yabane_new.setStage(stage)
-                   .sizingStage();
-
-         yabane_new.drawGroups()
-                   .drawGrid()
-                   .drawYabane()
-                   .drawHeader();
-
-         // yabane_new.drawProt(graph_data_new);
+         let yabane_new = new D3jsYabane(config)
+             .draw({
+                 scale: scale,
+                 header: header,
+                 stage: stage,
+                 yabane: graph_data_new
+             })
         </script>
     </body>
 </html>

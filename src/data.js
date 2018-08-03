@@ -50,19 +50,19 @@ var graph_data_new = [
     },
     {
         code: '3', name: 'www.amazon.co.jp',
-        start: new Date('2018-08-03'), end: new Date('2018-11-04'),
+        start: new Date('2018-08-03'), end: new Date('2018-08-06'),
         uri: 'https://www.amazon.co.jp/',
         children: []
     },
     {
         code: '4', name: 'www.facebook.com',
-        start: new Date('2018-08-04'), end: new Date('2018-11-17'),
+        start: new Date('2018-08-04'), end: new Date('2018-09-17'),
         uri: 'https://www.facebook.com/',
         children: []
     },
     {
         code: '5', name: 'www.facebook.com',
-        start: new Date('2018-08-05'), end: new Date('2018-11-30'),
+        start: new Date('2018-08-05'), end: new Date('2018-10-30'),
         uri: 'https://twitter.com/',
         children: []
     },

@@ -110,7 +110,9 @@ class D3jsYabane {
             .map((d) => { return d._h; })
             .reduce((a,b) => { return a + b; });
 
-        return h_sum + margin + config.padding * 2;
+        let labe_area_h = 22;
+
+        return h_sum + margin + config.padding * 2 + labe_area_h;
     }
     sizingYabane (data) {
         let scale = this._scale;
@@ -151,6 +153,7 @@ class D3jsYabane {
         let scale = this._scale;
         let config = this._config.yabane;
         let datas = this._data;
+        let labe_area_h = 22;
         let y = start.y;
 
         for (var i in datas) {
@@ -161,7 +164,7 @@ class D3jsYabane {
             data._y = y;
 
             if (data.children)
-                this.positioningChildren(data._y, data.children);
+                this.positioningChildren(data._y + labe_area_h, data.children);
 
             y = y + data._h + config.margin;
         }
@@ -355,14 +358,14 @@ class D3jsYabane {
                 .attr('class', 'yabane-label')
                 .attr('x', (d) => {
                     if (d.children && d.children.length > 0)
-                        return d._x - 12;
+                        return d._x;
                     else
                         return d._x + 12;
 
                 })
                 .attr('y', (d) => {
                     if (d.children && d.children.length > 0)
-                        return d._y + 2 ;
+                        return d._y + 19 ;
                     else
                         return d._y + 16 ;
                 })
@@ -412,5 +415,22 @@ class D3jsYabane {
             .text((d) => { return d.label; });
 
         return this;
+    }
+    draw (params) {
+        this.setScale(params.scale);
+        this.setYabanes(params.yabane)
+            .sizing()
+            .positioning({ x:10, y:10 });
+
+        this.setHeader(params.header)
+            .sizingHeader();
+
+        this.setStage(params.stage)
+            .sizingStage();
+
+        this.drawGroups()
+            .drawGrid()
+            .drawYabane()
+            .drawHeader();
     }
 }
