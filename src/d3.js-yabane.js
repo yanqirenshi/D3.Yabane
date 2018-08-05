@@ -8,8 +8,36 @@ class D3jsYabane {
     /* **************************************************************** *
      *   Config
      * **************************************************************** */
-    config (config) {
-        this._config = config;
+    initConfig (selector, start, end) {
+        return {
+            scale: {
+                x: {
+                    tick: 88,
+                    start: start,
+                    end:   end
+                }
+            },
+            stage: {
+                selector: selector,
+                padding: 11
+            },
+            header: {
+                h: 20
+            },
+            yabane: {
+                h:22,
+                margin: 11,
+                padding: 8,
+                color: {},
+                fill: {},
+                stroke: {},
+                font: {}
+            }
+        };
+    }
+    config (selector, start, end) {
+        this._config = this.initConfig(selector, start, end);
+
         return this;
     }
     /* **************************************************************** *
@@ -101,14 +129,6 @@ class D3jsYabane {
 
         return out;
     }
-    setYabanes(data) {
-        this._data = data;
-
-        this.setParent(this._data);
-        this.setTerm(this._data);
-
-        return this;
-    }
     /* **************************************************************** *
      *   Sizing
      * **************************************************************** */
@@ -189,7 +209,7 @@ class D3jsYabane {
     /* **************************************************************** *
      *   Stage
      * **************************************************************** */
-    setStage () {
+    makeStage (selector) {
         let config = this._config.stage;
 
         this._stage.svg = d3.select(config.selector);
@@ -218,13 +238,18 @@ class D3jsYabane {
     data (data) {
         this._data = data;
 
+        this.setParent(this._data);
+        this.setTerm(this._data);
+
         this.sizing();
         this.positioning();
 
         return this;
     }
-    sizing () {}
-    positioning () {}
+    sizing () {
+    }
+    positioning () {
+    }
     /* **************************************************************** *
      *   Draw
      * **************************************************************** */
@@ -437,17 +462,15 @@ class D3jsYabane {
 
         return this;
     }
-    draw (params) {
+    draw () {
         this.setScale();
 
-        this.setYabanes(this._data)
-            .sizingYabanes()
+        this.sizingYabanes()
             .positioningYabanes();
 
         this.sizingHeader();
 
-        this.setStage()
-            .sizingStage();
+        this.sizingStage();
 
         this.drawGroups()
             .drawGrid()

@@ -47,33 +47,14 @@
         </div>
 
         <script>
-         let config = {
-             scale: {
-                 x: {
-                     tick: 88,
-                     start: moment().add(-2, 'w').millisecond(0).second(0).minute(0).hour(0),
-                     end:   moment().add( 6, 'M').millisecond(0).second(0).minute(0).hour(0)
-                 }
-             },
-             stage: {
-                 selector: 'svg.chart-yabane',
-                 padding: 11
-             },
-             header: {
-                 h: 20
-             },
-             yabane: {
-                 h:22,
-                 margin: 11,
-                 padding: 8,
-                 color: {},
-                 fill: {},
-                 stroke: {},
-                 font: {}
-             }
-         };
-         let yabane_new = new D3jsYabane()
-             .config(config)
+         let now   = moment().millisecond(0).second(0).minute(0).hour(0);
+         let start = moment(now).add(-2, 'w');
+         let end   = moment(now).add( 6, 'M');
+         let selector = 'svg.chart-yabane';
+
+         let d3yabane = new D3jsYabane()
+             .config(selector, start, end)
+             .makeStage()
              .data(yabane_data) // with sizing and positioning
              .draw();
         </script>
