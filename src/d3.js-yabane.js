@@ -138,7 +138,7 @@ class D3jsYabane {
 
         return data;
     }
-    sizing () {
+    sizingYabanes () {
         let datas = this._data;
 
         for (var i in datas)
@@ -162,12 +162,12 @@ class D3jsYabane {
             y = y + child._h + config.margin;
         }
     }
-    positioning (start) {
+    positioningYabanes () {
         let scale = this._scale;
-        let config = this._config.yabane;
+        let config = this._config;
         let datas = this._data;
         let labe_area_h = 22;
-        let y = start.y;
+        let y = config.stage.padding;
 
         for (var i in datas) {
             let data = datas[i];
@@ -179,7 +179,7 @@ class D3jsYabane {
             if (data.children)
                 this.positioningChildren(data._y + labe_area_h, data.children);
 
-            y = y + data._h + config.margin;
+            y = y + data._h + config.yabane.margin;
         }
         return this;
     }
@@ -217,8 +217,14 @@ class D3jsYabane {
      * **************************************************************** */
     data (data) {
         this._data = data;
+
+        this.sizing();
+        this.positioning();
+
         return this;
     }
+    sizing () {}
+    positioning () {}
     /* **************************************************************** *
      *   Draw
      * **************************************************************** */
@@ -435,8 +441,8 @@ class D3jsYabane {
         this.setScale();
 
         this.setYabanes(this._data)
-            .sizing()
-            .positioning({ x:10, y:10 });
+            .sizingYabanes()
+            .positioningYabanes();
 
         this.sizingHeader();
 
