@@ -22,8 +22,6 @@
 
         <script src="https://raw.githack.com/yanqirenshi/vanilla.js/master/dist/vanilla.js"></script>
 
-        <script src="d3.js-yabane.js"></script>
-
         <script src="data.js"></script>
         <script src="d3.js-yabane.js"></script>
     </head>
@@ -51,7 +49,18 @@
         <script>
          let config = {
              scale: {
-                 x: { tick: 88 }
+                 x: {
+                     tick: 88,
+                     start: moment().add(-2, 'w').millisecond(0).second(0).minute(0).hour(0),
+                     end:   moment().add( 6, 'M').millisecond(0).second(0).minute(0).hour(0)
+                 }
+             },
+             stage: {
+                 selector: 'svg.chart-yabane',
+                 padding: 11
+             },
+             header: {
+                 h: 20
              },
              yabane: {
                  h:22,
@@ -63,32 +72,10 @@
                  font: {}
              }
          };
-         let scale = {
-             config: {
-                 x: {
-                     tick: 88,
-                     start: moment().add(-2, 'w').millisecond(0).second(0).minute(0).hour(0),
-                     end:   moment().add( 6, 'M').millisecond(0).second(0).minute(0).hour(0)
-                 }
-             }
-         }
-         let header = {
-             h: 20
-         };
-         let stage = {
-             _id: -10,
-             selector: 'svg.chart-yabane',
-             padding: 11,
-             _w: 0,
-             _h: 0
-         };
-         let yabane_new = new D3jsYabane(config)
-             .draw({
-                 scale: scale,
-                 header: header,
-                 stage: stage,
-                 yabane: graph_data_new
-             })
+         let yabane_new = new D3jsYabane()
+             .config(config)
+             .data(yabane_data) // with sizing and positioning
+             .draw();
         </script>
     </body>
 </html>

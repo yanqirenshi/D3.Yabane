@@ -1,7 +1,16 @@
 class D3jsYabane {
-    constructor (config) {
-        this._config = config;
+    constructor () {
+        this._config = null;
+        this._scale = null;
+        this._stage = { svg: null };
         this._data = [];
+    }
+    /* **************************************************************** *
+     *   Config
+     * **************************************************************** */
+    config (config) {
+        this._config = config;
+        return this;
     }
     /* **************************************************************** *
      *   Scale
@@ -20,16 +29,20 @@ class D3jsYabane {
 
         return out.add(val, 'd');
     }
-    setScale (scale) {
-        this._scale = scale;
-        let start = this.fitMonday(scale.config.x.start, -1);
-        let end   = this.fitMonday(scale.config.x.end,    1);
+    setScale () {
+        let config = this._config.scale;
 
-        let w = end.diff(start, 'weeks') * scale.config.x.tick;
+        this._scale = {
+            x: {}
+        };
+        let start = this.fitMonday(config.x.start, -1);
+        let end   = this.fitMonday(config.x.end,    1);
 
-        this._scale.config.x._start = start;
-        this._scale.config.x._end   = end;
-        this._scale.config.x.w      = w;
+        let w = end.diff(start, 'weeks') * config.x.tick;
+
+        config.x._start = start;
+        config.x._end   = end;
+        config.x._w      = w;
 
         this._scale.x = d3
             .scaleTime()
@@ -170,36 +183,29 @@ class D3jsYabane {
         }
         return this;
     }
-    /* **************************************************************** *
-     *   Header
-     * **************************************************************** */
-    setHeader (header) {
-        this._header = header;
-        return this;
-    }
     sizingHeader () {
         return this;
     }
     /* **************************************************************** *
      *   Stage
      * **************************************************************** */
-    setStage (stage) {
-        this._stage = stage;
+    setStage () {
+        let config = this._config.stage;
 
-        this._stage._svg = d3.select(stage.selector);
+        this._stage.svg = d3.select(config.selector);
 
         return this;
     }
     sizingStage () {
-        let stage = this._stage;
-        let scale = this._scale;
+        let stage = this._config.stage;
+        let scale = this._config.scale;
 
         let last_yabane = this._data[this._data.length - 1];
         stage._h = last_yabane._y + last_yabane._h + stage.padding * 2;
 
-        let w = scale.config.x.w;
+        let w = scale.x._w;
 
-        let svg = stage._svg;
+        let svg = this._stage.svg;
 
         svg.attr('height', (d) => { return stage._h + 'px'; })
             .attr('width', () => { return w + 'px';});
@@ -207,13 +213,20 @@ class D3jsYabane {
         return this;
     }
     /* **************************************************************** *
+     *   Data
+     * **************************************************************** */
+    data (data) {
+        this._data = data;
+        return this;
+    }
+    /* **************************************************************** *
      *   Draw
      * **************************************************************** */
     drawGroups () {
         let stage = this._stage;
-        let svg = stage._svg;
+        let svg = stage.svg;
 
-        let header_h = this._header.h;
+        let header_h = this._config.header.h;
 
         let g_datas = [
             { _id: -1, code: 'stage',  location: { x:0, y:0 } },
@@ -235,11 +248,12 @@ class D3jsYabane {
         return this;
     }
     drawGrid () {
-        let svg = stage._svg;
+        let svg = this._stage.svg;
+        let scale = this._config.scale;
 
         let scale_x = this._scale.x;
-        let start   = moment(this._scale.config.x._start);
-        let end     = moment(this._scale.config.x._end);
+        let start   = moment(scale.x._start);
+        let end     = moment(scale.x._end);
         let data    = [];
 
         while (start.isSameOrBefore(end)) {
@@ -271,7 +285,7 @@ class D3jsYabane {
         return this;
     }
     drawYabane () {
-        let svg = stage._svg;
+        let svg = this._stage.svg;
 
         let yabanes = {
             max: 0,
@@ -379,11 +393,12 @@ class D3jsYabane {
         return this;
     }
     drawHeader () {
-        let header  = this._header;
+        let header  = this._config.header;
+        let scale_config = this._config.scale;
 
         let scale_x   = this._scale.x;
-        let start     = this._scale.config.x._start;
-        let end       = this._scale.config.x._end;
+        let start     = scale_config.x._start;
+        let end       = scale_config.x._end;
         let font_size = 12;
         let data      = [];
 
@@ -401,7 +416,7 @@ class D3jsYabane {
             start.add('7', 'd');
         }
 
-        let svg = stage._svg;
+        let svg = this._stage.svg;
         let lines = svg
             .select('g.header')
             .selectAll('text.date')
@@ -417,15 +432,15 @@ class D3jsYabane {
         return this;
     }
     draw (params) {
-        this.setScale(params.scale);
-        this.setYabanes(params.yabane)
+        this.setScale();
+
+        this.setYabanes(this._data)
             .sizing()
             .positioning({ x:10, y:10 });
 
-        this.setHeader(params.header)
-            .sizingHeader();
+        this.sizingHeader();
 
-        this.setStage(params.stage)
+        this.setStage()
             .sizingStage();
 
         this.drawGroups()
