@@ -535,11 +535,17 @@ class D3jsYabane {
                         + point(x+w , (y+h))
                         + point(x  , (y+h));
                 } else {
-                    return point(x          , y)
-                        + point((x+w-head) , y)
-                        + point((x+w)      , (y+(h/2)))
-                        + point((x+w-head) , (y+h))
-                        + point(x          , (y+h));
+                    let x1 = x;
+                    let x2 = (x1+w-head);
+                    let x3 = (x1+w);
+
+                    x2 = x2<x1 ? x1 : x2;
+
+                    return point(x1 , y)
+                        + point(x2 , y)
+                        + point(x3 , (y+(h/2)))
+                        + point(x2 , (y+h))
+                        + point(x1 , (y+h));
                 }
             })
             .attr('fill', (d) => {
