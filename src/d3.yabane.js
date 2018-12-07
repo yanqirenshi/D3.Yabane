@@ -31,13 +31,12 @@ class D3jsYabaneData {
         let children = parent.children;
         let out = {start: null, end: null };
 
-        for (var i in children) {
-            let child = children[i];
-
+        for (let child of children.list) {
             child._parent = parent;
 
             if (!this.isWorkpackage(child)) {
                 let tmp = this.childrenSchedule(child);
+
                 child.schedule.start = tmp.start;
                 child.schedule.end   = tmp.end;
             }
@@ -47,43 +46,47 @@ class D3jsYabaneData {
 
         return out;
     }
-    setSchedules (tree) {
-        for (var i in tree) {
-            let node = tree[i];
+    setSchedules (nodes) {
+
+        for (let node of nodes.list) {
 
             if (this.isWorkpackage(node))
                 continue;
 
             let schedule = this.childrenSchedule(node);
-            if (!node.schedule) node.schedule = {start: null, end: null};
+            if (!node.schedule)
+                node.schedule = {start: null, end: null};
+
             node.schedule.start = schedule.start;
             node.schedule.end   = schedule.end;
         }
-        return tree;
-    }
-    cleaningWorkpackage (tree) {
-        let out = [];
-        for (var i in tree) {
-            let node = tree[i];
 
+        return nodes;
+    }
+    cleaningWorkpackage (nodes) {
+        let out = { ht: {}, list: [] };
+
+        for (let node of nodes.list) {
             if (!this.isWorkpackage(node)) {
                 node.children = this.cleaningWorkpackage(node.children);
-                out.push(node);
+                out.list.push(node);
             } else {
-                if (this.isScheduled(node) && !this.isComleted(node))
-                    out.push(node);
+                // if (this.isScheduled(node) && !this.isComleted(node))
+                //     out.list.push(node);
+                out.list.push(node);
             }
         }
         return out;
     }
-    cleaning (tree) {
+    cleaning (nodes) {
         let out = [];
-        for (var i in tree) {
-            let node = tree[i];
+
+        for (let node of nodes.list) {
             if (node.schedule.start && node.schedule.end)
                 out.push(node);
             node.children = this.cleaning(node.children);
         }
+
         return out.sort((a,b) => {
             return (a.schedule.end > b.schedule.end) ? 1 : -1;
         });
@@ -105,7 +108,7 @@ class D3jsYabaneData {
         }
     }
     sorter (a,b) {
-        return (a.end > b.end) ? 1 : -1;
+        return (a.end > b.end) ? -1 : 1;
     }
     sort (tree) {
         let tmp = tree.sort(this.sorter);
@@ -116,7 +119,14 @@ class D3jsYabaneData {
         return tmp;
     }
     normalize (tree) {
-        let yabanes = this.cleaning(this.setSchedules(this.cleaningWorkpackage(tree)));
+        let nodes = { ht: {}, list: [] };
+        for (let node of tree) {
+            nodes.ht[node._id] = node;
+            nodes.list.push(node);
+        }
+
+        let x = this.cleaningWorkpackage(nodes);
+        let yabanes = this.cleaning(this.setSchedules(x));
 
         this.setLevel(yabanes);
 
@@ -132,13 +142,20 @@ class D3jsYabaneDesigner {
         this._config = {
             yabane: {
                 group: {
-                    padding: { other: 12, bottom: 0 },
+                    padding: {
+                        other: 12,
+                        top: 8,
+                        bottom: 0,
+                    },
                     font: {
                         size: 9,
-                        margin: 1
+                        margin: {
+                            top: 1,
+                            bottom: 1,
+                        }
                     }
                 },
-                margin: 22,
+                margin: 11,
                 workpackage: {
                     h: 22
                 }
@@ -160,8 +177,7 @@ class D3jsYabaneDesigner {
         let workpackage_h = config.yabane.workpackage.h;
         let scale = this._scale;
 
-        for (var i in nodes) {
-            let node = nodes[i];
+        for (let node of nodes) {
             if (this.isWorkpackage(node)) {
                 let x1 = scale.x(node.schedule.start);
                 let x2 = scale.x(node.schedule.end);
@@ -214,19 +230,25 @@ class D3jsYabaneDesigner {
 
             if (!this.isWorkpackage(node)) {
                 let h_children = this.setH2Wbs(node.children);
-                node._h = h_children + (padding.other + padding.bottom);
+                node._h = h_children + (padding.top + padding.bottom);
             }
 
             h += node._h;
         }
 
-        return h + (nodes.length * margin);
+        return h + ((nodes.length + 1) * margin);
     }
     setY2All (nodes, top) {
         let config = this.config();
         let padding = config.yabane.group.padding;
         let margin = config.yabane.margin;
-        let group_text_area_size = (config.yabane.group.font.size + config.yabane.group.font.margin * 2);
+        let config_font = config.yabane.group.font;
+
+        // テキストエリアのサイズ
+        let group_text_area_size =
+            config_font.size +
+            config_font.margin.top +
+            config_font.margin.bottom;
 
         if (!top) top = 0;
 
@@ -235,10 +257,12 @@ class D3jsYabaneDesigner {
 
             node._y = top;
 
+            // workpackage 以外の高さを設定する。
+            //   高さは子供の高さから計算す
             if (!this.isWorkpackage(node))
                 this.setY2All(node.children, top + padding.other + group_text_area_size);
 
-            top += node._h + margin;
+            top += node._h + margin; // margin はヤバネとヤバネの間
         }
     }
     tailor (tree) {
@@ -549,7 +573,13 @@ class D3jsYabane {
                 }
             })
             .attr('fill', (d) => {
-                return (d.children && d.children.length > 0) ? '#eebbcb' : '#aacf53';
+                if (d.children && d.children.length > 0)
+                    return '#eebbcb';
+
+                if (d.result.end)
+                    return '#eeeeee';
+
+                return '#aacf53';
             })
             .attr('fill-opacity', (d) => {
                 if (d.children && d.children.length > 0)
@@ -557,7 +587,12 @@ class D3jsYabane {
                 return '1';
             })
             .attr('stroke', (d) => {
-                return (d.children && d.children.length > 0) ? 'none' : '#a8bf93';
+                if (d.children && d.children.length > 0)
+                    return 'none';
+                if (d.result.end)
+                    return '#cccccc';
+
+                return  '#a8bf93';
             })
             .attr('stroke-width', (d) => {
                 if (d._level==1) return '2';
@@ -567,19 +602,27 @@ class D3jsYabane {
     drawYabaneText (svg, targets) {
         svg.select('g.yabane')
             .selectAll('text.yabane-label')
-            .data(targets, (d) => { return d.code; })
+            .data(targets, (d) => { return d._id; })
             .enter()
             .append('text')
             .attr('class', 'yabane-label')
             .attr('x', (d) => { return d._x + 12; })
             .attr('y', (d) => { return d._y + 16 ; })
             .attr('fill', '#333333')
-            .attr('font-size', 12)
+            .attr('font-size', (d) => {
+                return 12;
+            })
+            .attr('font-weight', (d) => {
+                if (d._class=='WBS')
+                    return 'bold';
+                else
+                    return 'normal';
+            })
             .text((d) => {
                 if (d.children && d.children.length>0)
-                    return d.name;
+                    return d.label;
                 else
-                    return d.name +
+                    return d.label +
                     ', Term:' +
                     moment(d.schedule.start).format('YYYY-MM-DD') + ' ⇒ ' +
                     moment(d.schedule.end).format('YYYY-MM-DD');
