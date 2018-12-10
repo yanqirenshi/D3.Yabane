@@ -432,7 +432,6 @@ class D3jsYabane {
      * **************************************************************** */
     data (tree) {
         this._data = new D3jsYabaneData().normalize(tree);
-
         let tailor = new D3jsYabaneDesigner(this._scale);
         let data = tailor.tailor(this._data);
 
@@ -510,11 +509,16 @@ class D3jsYabane {
                 x1: x,
                 y1: 0,
                 x2: x,
-                y2: 3333
+                y2: 33333
             });
 
             start.add('7', 'd');
         }
+
+        svg
+            .select('g.grid')
+            .selectAll('line.grid')
+            .remove();
 
         let lines = svg
             .select('g.grid')
@@ -532,18 +536,14 @@ class D3jsYabane {
 
         return this;
     }
-    drawYabanePolygon (svg, targets) {
+    drawYabanePolygonCore (d3objects) {
         let point = (x, y) => {
             return x + ', ' + y + ' ';
         };
 
-        svg.select('g.yabane')
-            .selectAll('polygon.yabane')
-            .data(targets, (d) => { return d.code; })
-            .enter()
-            .append('polygon')
+        d3objects
             .attr('class', 'yabane')
-            .attr('code', (d) => { return d.code; })
+            .attr('code', (d) => { return d._id; })
             .attr("points", function (d, i) {
                 var start = d.start;
                 var end = d.end;
@@ -599,13 +599,21 @@ class D3jsYabane {
                 return '1';
             });
     }
-    drawYabaneText (svg, targets) {
-        svg.select('g.yabane')
-            .selectAll('text.yabane-label')
-            .data(targets, (d) => { return d._id; })
-            .enter()
-            .append('text')
-            .attr('class', 'yabane-label')
+    drawYabanePolygon (svg, targets) {
+        this.drawYabanePolygonCore(
+            svg.select('g.yabane')
+                .selectAll('polygon.yabane')
+                .data(targets, (d) => { return d._id; })
+                .enter()
+                .append('polygon'));
+
+        this.drawYabanePolygonCore(
+            svg.select('g.yabane')
+                .selectAll('polygon.yabane')
+                .data(targets, (d) => { return d._id; }));
+    }
+    drawYabaneTextCore (d3objects) {
+        d3objects.attr('class', 'yabane-label')
             .attr('x', (d) => { return d._x + 12; })
             .attr('y', (d) => { return d._y + 16 ; })
             .attr('fill', '#333333')
@@ -627,6 +635,19 @@ class D3jsYabane {
                     moment(d.schedule.start).format('YYYY-MM-DD') + ' ⇒ ' +
                     moment(d.schedule.end).format('YYYY-MM-DD');
             });
+    }
+    drawYabaneText (svg, targets) {
+        this.drawYabaneTextCore(
+            svg.select('g.yabane')
+                .selectAll('text.yabane-label')
+                .data(targets, (d) => { return d._id; })
+                .enter()
+                .append('text'));
+
+        this.drawYabaneTextCore(
+            svg.select('g.yabane')
+                .selectAll('text.yabane-label')
+                .data(targets, (d) => { return d._id; }));
     }
     drawYabane () {
         let svg = this._stage.svg;
@@ -672,6 +693,10 @@ class D3jsYabane {
         }
 
         let svg = this._stage.svg;
+        svg.select('g.header')
+            .selectAll('text.date')
+            .remove();
+
         let lines = svg
             .select('g.header')
             .selectAll('text.date')
@@ -694,7 +719,7 @@ class D3jsYabane {
             x1: scale_x(now),
             y1: 0,
             x2: scale_x(now),
-            y2: 2222
+            y2: 22222
         }];
 
         let svg = this._stage.svg;
