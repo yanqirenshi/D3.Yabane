@@ -2,6 +2,88 @@
  *   データを綺麗にする。
  * **************************************************************** */
 class D3jsYabaneData {
+    /* **************************************************************** *
+     *   Data
+     * **************************************************************** */
+    makePool (list)  {
+        let pool = { ht: {}, list: [] };
+
+        for (let obj of list) {
+            if (!obj._id) {
+                console.warn('Skip obj. _id is empty. ');
+                console.warn(obj);
+                continue;
+            }
+
+            pool.ht[obj._id] = obj;
+            pool.list.push(obj);
+        }
+
+        return pool;
+    }
+    getTmepDataOfNode () {
+        return {
+            code: null,
+            name: '',
+            uri: '',
+            schedule: {
+                start: new Date(),
+                end: new Date(),
+            },
+            result: {
+                start: new Date(),
+                end: new Date(),
+            },
+            children: { ht: {}, list: [] },
+            _core: null,
+            _id: null,
+            _class: null,
+            _parent: null,
+            _level: 1,
+        };
+    }
+    makeNodeData (data, parent) {
+        let node_data = this.getTmepDataOfNode();
+
+        let val = (src, trg, key) => {
+            if (!src[key]) return;
+
+            trg[key] = src[key];
+        };
+
+        val(data, node_data, '_class');
+        val(data, node_data, '_id');
+        val(data, node_data, 'code');
+        val(data, node_data, 'schedule');
+        val(data, node_data, 'result');
+
+        val(data, node_data, 'name');
+
+        if (node_data.name=='')
+            node_data.name = data.label;
+
+        let children = this.makePool(this.makeNodeDatas(data.children.list, node_data));
+
+        node_data.children = children;
+        node_data._core = data.core || data._core;
+
+        if (parent) {
+            node_data._parent = parent;
+            node_data._level = parent._level + 1;
+        }
+
+        return node_data;
+    }
+    makeNodeDatas (tree, parent) {
+        let out = tree.map((node) => {
+            return this.makeNodeData(node, parent);
+        });
+
+        return out;
+    }
+    /* **************************************************************** *
+     *   Config
+     * **************************************************************** */
     isWorkpackage (node) {
         return node._class=='WORKPACKAGE';
     }
@@ -47,13 +129,13 @@ class D3jsYabaneData {
         return out;
     }
     setSchedules (nodes) {
-
         for (let node of nodes.list) {
 
             if (this.isWorkpackage(node))
                 continue;
 
             let schedule = this.childrenSchedule(node);
+
             if (!node.schedule)
                 node.schedule = {start: null, end: null};
 
@@ -66,9 +148,10 @@ class D3jsYabaneData {
     cleaningWorkpackage (nodes) {
         let out = { ht: {}, list: [] };
 
-        for (let node of nodes.list) {
+        for (let node of nodes) {
             if (!this.isWorkpackage(node)) {
-                node.children = this.cleaningWorkpackage(node.children);
+                // node.children = this.cleaningWorkpackage(node.children.list);
+                this.cleaningWorkpackage(node.children.list);
                 out.list.push(node);
             } else {
                 // if (this.isScheduled(node) && !this.isComleted(node))
@@ -76,6 +159,7 @@ class D3jsYabaneData {
                 out.list.push(node);
             }
         }
+
         return out;
     }
     cleaning (nodes) {
@@ -84,7 +168,8 @@ class D3jsYabaneData {
         for (let node of nodes.list) {
             if (node.schedule.start && node.schedule.end)
                 out.push(node);
-            node.children = this.cleaning(node.children);
+
+            this.cleaning(node.children);
         }
 
         return out.sort((a,b) => {
@@ -92,10 +177,8 @@ class D3jsYabaneData {
         });
     }
     setLevelChildren (children) {
-        for (var i in children) {
-            let child = children[i];
+        for (let child of children.list) {
             child._level = child._parent._level + 1;
-
             this.setLevelChildren(child.children);
         }
     }
@@ -108,23 +191,18 @@ class D3jsYabaneData {
         }
     }
     sorter (a,b) {
-        return (a.end > b.end) ? -1 : 1;
+        return (a.schedule.end > b.schedule.end) ? -1 : 1;
     }
     sort (tree) {
         let tmp = tree.sort(this.sorter);
 
         for (var i in tmp)
-            tmp[i].children = tmp[i].children.sort(this.sorter);
+            tmp[i].children.list = tmp[i].children.list.sort(this.sorter);
 
         return tmp;
     }
     normalize (tree) {
-        let nodes = { ht: {}, list: [] };
-        for (let node of tree) {
-            nodes.ht[node._id] = node;
-            nodes.list.push(node);
-        }
-
+        let nodes = this.makeNodeDatas(tree);
         let x = this.cleaningWorkpackage(nodes);
         let yabanes = this.cleaning(this.setSchedules(x));
 
@@ -177,10 +255,16 @@ class D3jsYabaneDesigner {
         let workpackage_h = config.yabane.workpackage.h;
         let scale = this._scale;
 
-        for (let node of nodes) {
+        let calScale = (dt) => {
+            if (dt) return scale.x(dt);
+            return null;
+        };
+
+        for (let node of nodes.list) {
             if (this.isWorkpackage(node)) {
-                let x1 = scale.x(node.schedule.start);
-                let x2 = scale.x(node.schedule.end);
+                let x1 = calScale(node.schedule.start);
+                let x2 = calScale(node.schedule.end);
+
                 node._w = x2 - x1;
                 node._h = workpackage_h;
                 node._x = x1;
@@ -195,26 +279,31 @@ class D3jsYabaneDesigner {
         let padding = config.yabane.group.padding;
 
         let x = { min:null, max:null};
+        let isNum = (v) => {
+            if (v==0 || v) return true;
+            return false;
+        };
 
-        for (var i in nodes) {
-            let node = nodes[i];
+        for (let node of nodes.list) {
+            let x_left, x_right;
 
-            let x1, x2;
             if (this.isWorkpackage(node)) {
-                x1 = node._x;
-                x2 = node._x + node._w;
+                if (isNum(node._x) && isNum(node._w)) {
+                    x_left  = node._x;
+                    x_right = node._x + node._w;
+                }
             } else {
                 let x_children = this.setXandW2Wbs(node.children);
 
-                x1 = x_children.min - padding.other;
-                x2 = x_children.max + padding.other;
+                x_left = x_children.min - padding.other;
+                x_right = x_children.max + padding.other;
 
-                node._x = x1;
-                node._w = x2 - x1;
+                node._x = x_left;
+                node._w = x_right - x_left;
             }
 
-            if (!x.min || x.min > x1) x.min = x1;
-            if (!x.max || x.max < x2) x.max = x2;
+            if (!x.min || x.min > x_left)  x.min = x_left;
+            if (!x.max || x.max < x_right) x.max = x_right;
         }
         return x;
     }
@@ -225,9 +314,7 @@ class D3jsYabaneDesigner {
 
         let h = 0;
 
-        for (var i in nodes) {
-            let node = nodes[i];
-
+        for (let node of nodes.list) {
             if (!this.isWorkpackage(node)) {
                 let h_children = this.setH2Wbs(node.children);
                 node._h = h_children + (padding.top + padding.bottom);
@@ -236,7 +323,7 @@ class D3jsYabaneDesigner {
             h += node._h;
         }
 
-        return h + ((nodes.length + 1) * margin);
+        return h + ((nodes.list.length + 1) * margin);
     }
     setY2All (nodes, top) {
         let config = this.config();
@@ -252,9 +339,7 @@ class D3jsYabaneDesigner {
 
         if (!top) top = 0;
 
-        for (var i in nodes) {
-            let node = nodes[i];
-
+        for (var node of nodes.list) {
             node._y = top;
 
             // workpackage 以外の高さを設定する。
@@ -266,11 +351,11 @@ class D3jsYabaneDesigner {
         }
     }
     tailor (tree) {
-
-        this.setSizeAndLocation2Workpackage(tree);
-        this.setXandW2Wbs(tree);
-        this.setH2Wbs(tree);
-        this.setY2All(tree);
+        let targets = { list: tree };
+        this.setSizeAndLocation2Workpackage(targets);
+        this.setXandW2Wbs(targets);
+        this.setH2Wbs(targets);
+        this.setY2All(targets);
 
         return null;
     }
@@ -280,7 +365,7 @@ class D3jsYabaneDesigner {
  *   main class  TODO: ここを綺麗にしたい。
  * **************************************************************** */
 class D3jsYabane {
-    constructor () {
+    constructor (options) {
         this._config = null;
         this._scale = null;
         this._stage = { svg: null };
@@ -289,17 +374,20 @@ class D3jsYabane {
     /* **************************************************************** *
      *   Config
      * **************************************************************** */
-    initConfig (selector, start, end) {
+    makeConfigTemplate () {
+        let now   = moment().millisecond(0).second(0).minute(0).hour(0);
+
         return {
             scale: {
                 x: {
+                    cycle: 'week',
                     tick: 88,
-                    start: start,
-                    end:   end
+                    start: moment(now).add(-4, 'w'),
+                    end:   moment(now).add(12, 'w'),
                 }
             },
             stage: {
-                selector: selector,
+                selector: null,
                 padding: 11
             },
             header: {
@@ -316,8 +404,18 @@ class D3jsYabane {
             }
         };
     }
-    config (selector, start, end) {
-        this._config = this.initConfig(selector, start, end);
+    initConfig (options) {
+        let new_config = this.makeConfigTemplate();
+
+        new_config.scale.x = options.scale.x;
+        new_config.stage.selector = options.stage.selector;
+
+        return new_config;
+    }
+    config (options) {
+        this._config = this.initConfig(options);
+
+        this.setScale();
 
         return this;
     }
@@ -338,25 +436,59 @@ class D3jsYabane {
 
         return out.add(val, 'd');
     }
+    fitDay(d, vector) {
+        let out = moment(d);
+
+        if (vector==-1)
+            return out.startOf('day');
+
+        return out.add(1,'day').startOf('day');
+    }
+    fitHour(d, vector) {
+        let out = moment(d);
+
+        if (vector==-1)
+            return out.startOf('hour');
+
+        return out.add(1,'hour').startOf('hour');
+    }
+    fittingStartEnd (config) {
+        let cycle = config.x.cycle;
+
+        let makeOutHt = (start, end) => {
+            let w = end.diff(start, cycle);
+
+            return { start: start, end: end, w: w };
+        };
+
+        if (cycle=='weeks')
+            return makeOutHt(this.fitMonday(config.x.start, -1), this.fitMonday(config.x.end, 1));
+
+        if (cycle=='days')
+            return makeOutHt(this.fitDay(config.x.start, -1), this.fitDay(config.x.end, 1));
+
+        if (cycle=='hours')
+            return makeOutHt(this.fitHour(config.x.start, -1), this.fitHour(config.x.end, 1));
+
+        throw new Error('対応していないサイクルです。 cycle = ' + cycle + '\n' +
+                        '対応しているサイクル: weeks, days, hours');
+    }
     setScale () {
         let config = this._config.scale;
 
         this._scale = {
             x: {}
         };
-        let start = this.fitMonday(config.x.start, -1);
-        let end   = this.fitMonday(config.x.end,    1);
 
-        let w = end.diff(start, 'weeks') * config.x.tick;
-
-        config.x._start = start;
-        config.x._end   = end;
-        config.x._w      = w;
+        let term  = this.fittingStartEnd(config);
+        config.x._start = term.start;
+        config.x._end   = term.end;
+        config.x._w     = term.w * config.x.tick;
 
         this._scale.x = d3
             .scaleTime()
-            .domain([start.toDate(), end.toDate()])
-            .range([0, w]);
+            .domain([config.x._start.toDate(), config.x._end.toDate()])
+            .range([0, config.x._w]);
 
         return this;
     }
@@ -415,13 +547,19 @@ class D3jsYabane {
         let stage = this._config.stage;
         let scale = this._config.scale;
 
-        let last_yabane = this._data[this._data.length - 1];
-        stage._h = last_yabane._y + last_yabane._h + stage.padding * 2;
+        // TODO: write zero case
+        if (this._data.length==0)
+            return this;
 
+        // cal h
+        let last_yabane = this._data[this._data.length - 1];
+        stage._h = last_yabane._y + last_yabane._h + stage.padding * 4;
+
+        // cal w
         let w = scale.x._w;
 
+        // set size
         let svg = this._stage.svg;
-
         svg.attr('height', (d) => { return stage._h + 'px'; })
             .attr('width', () => { return w + 'px';});
 
@@ -432,23 +570,21 @@ class D3jsYabane {
      * **************************************************************** */
     data (tree) {
         this._data = new D3jsYabaneData().normalize(tree);
+
         let tailor = new D3jsYabaneDesigner(this._scale);
         let data = tailor.tailor(this._data);
 
         return this;
     }
     flatten (data, list) {
-
-        for (var i in list) {
-            let yabane = list[i];
-
+        for (let yabane of list) {
             if (data.max < yabane._level)
                 data.max = yabane._level;
 
             data.list.push(yabane);
 
-            if (yabane.children && yabane.children.length > 0)
-                this.flatten(data, yabane.children);
+            if (yabane.children && yabane.children.list.length > 0)
+                this.flatten(data, yabane.children.list);
         }
 
         data.list = data.list.filter((d) => {
@@ -512,7 +648,7 @@ class D3jsYabane {
                 y2: 33333
             });
 
-            start.add('7', 'd');
+            start.add('1', scale.x.cycle);
         }
 
         svg
@@ -542,11 +678,10 @@ class D3jsYabane {
         };
 
         d3objects
-            .attr('class', 'yabane')
             .attr('code', (d) => { return d._id; })
             .attr("points", function (d, i) {
-                var start = d.start;
-                var end = d.end;
+                var start = d.schedule.start;
+                var end = d.schedule.end;
                 var h = d._h;
                 var w = d._w;
                 var x = d._x;
@@ -597,6 +732,12 @@ class D3jsYabane {
             .attr('stroke-width', (d) => {
                 if (d._level==1) return '2';
                 return '1';
+            })
+            .attr('start-time', (d) => {
+                return moment(d.schedule.start).format('YYYY-MM-DD HH:mm:ss');
+            })
+            .attr('end-time', (d) => {
+                return moment(d.schedule.end).format('YYYY-MM-DD HH:mm:ss');
             });
     }
     drawYabanePolygon (svg, targets) {
@@ -605,15 +746,15 @@ class D3jsYabane {
                 .selectAll('polygon.yabane')
                 .data(targets, (d) => { return d._id; })
                 .enter()
-                .append('polygon'));
-
-        this.drawYabanePolygonCore(
-            svg.select('g.yabane')
-                .selectAll('polygon.yabane')
-                .data(targets, (d) => { return d._id; }));
+                .append('polygon')
+                .attr('class', 'yabane'));
     }
     drawYabaneTextCore (d3objects) {
-        d3objects.attr('class', 'yabane-label')
+        let label_key = 'name';
+        let term_fmt = 'HH:mm';
+
+        d3objects
+            .attr('class', 'yabane-label')
             .attr('x', (d) => { return d._x + 12; })
             .attr('y', (d) => { return d._y + 16 ; })
             .attr('fill', '#333333')
@@ -627,13 +768,13 @@ class D3jsYabane {
                     return 'normal';
             })
             .text((d) => {
-                if (d.children && d.children.length>0)
-                    return d.label;
+                if (d.children && d.children.list.length>0)
+                    return d[label_key];
                 else
-                    return d.label +
+                    return d[label_key] +
                     ', Term:' +
-                    moment(d.schedule.start).format('YYYY-MM-DD') + ' ⇒ ' +
-                    moment(d.schedule.end).format('YYYY-MM-DD');
+                    moment(d.schedule.start).format(term_fmt) + ' ⇒ ' +
+                    moment(d.schedule.end).format(term_fmt);
             });
     }
     drawYabaneText (svg, targets) {
@@ -670,13 +811,21 @@ class D3jsYabane {
     }
     drawHeader () {
         let header  = this._config.header;
-        let scale_config = this._config.scale;
+        let scale = this._config.scale;
 
         let scale_x   = this._scale.x;
-        let start     = scale_config.x._start;
-        let end       = scale_config.x._end;
+        let start     = scale.x._start;
+        let end       = scale.x._end;
         let font_size = 12;
         let data      = [];
+
+        let fmts = {
+            months: 'YYYY-MM',
+            weeks: 'YYYY-MM-DD',
+            days: 'YYYY-MM-DD',
+            hours: 'DD HH:mm',
+        };
+        let fmt = fmts[scale.x.cycle];
 
         while (start.isSameOrBefore(end)) {
             let x = scale_x(start.toDate());
@@ -684,12 +833,13 @@ class D3jsYabane {
             data.push({
                 x:     x - (font_size/6),
                 y:     font_size,
-                label: start.format('YYYY-MM-DD'),
+                label: start.format(fmt),
                 font: {
                     size: font_size
                 }
             });
-            start.add('7', 'd');
+
+            start.add('1', scale.x.cycle);
         }
 
         let svg = this._stage.svg;

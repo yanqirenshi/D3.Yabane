@@ -1,59 +1,83 @@
 var yabane_data = [
     {
+        _class: 'WBS',
+        _id: 1,
         code: '1',
         name: 'www.yahoo.co.jp',
-        start: new Date('2018-08-01'),
-        end: new Date('2018-08-12'),
         uri: 'https://www.yahoo.co.jp/',
-        children: []
+        schedule: {
+            start: moment().add(-1, 'h').toDate(),
+            end: moment().add(1, 'h').toDate(),
+        },
+        children: [],
     },
     {
+        _class: 'WBS',
+        _id: 2,
         code: '2',
         name: 'www.google.co.jp',
-        start: new Date('2018-08-01'),
-        end: new Date('2018-08-23'),
         uri: 'https://www.google.co.jp/',
         children: [
             {
+                _class: 'WORKPACKAGE',
+                _id: 10,
                 code: '10',
                 name: 'www.facebook.com',
-                start: new Date('2018-08-04'),
-                end: new Date('2018-11-17'),
                 uri: 'https://www.facebook.com/',
-                children: []
+                schedule: {
+                    start: moment().add(-1, 'h').toDate(),
+                    end: moment().add(1, 'h').toDate(),
+                },
+                children: [],
             },
             {
+                _class: 'WORKPACKAGE',
+                _id: 11,
                 code: '11',
                 name: 'www.facebook.com',
-                start: new Date('2018-08-05'),
-                end: new Date('2018-11-30'),
                 uri: 'https://twitter.com/',
-                children: []
+                schedule: {
+                    start: moment().add(2, 'h').toDate(),
+                    end: moment().add(4, 'h').toDate(),
+                },
+                children: [],
             }
         ]
     },
     {
+        _class: 'WORKPACKAGE',
+        _id: 3,
         code: '3',
         name: 'www.amazon.co.jp',
-        start: new Date('2018-08-03'),
-        end: new Date('2018-08-06'),
         uri: 'https://www.amazon.co.jp/',
-        children: []
+        schedule: {
+            start: moment().add(5, 'h').toDate(),
+            end: moment().add(6, 'h').toDate(),
+        },
+        children: [],
     },
     {
+        _class: 'WORKPACKAGE',
+        _id: 4,
         code: '4',
         name: 'www.facebook.com',
-        start: new Date('2018-08-04'),
-        end: new Date('2018-09-17'),
         uri: 'https://www.facebook.com/',
-        children: []
+        schedule: {
+            start: moment().add(7, 'h').toDate(),
+            end: moment().add(10, 'h').toDate(),
+        },
+        children: [],
     },
     {
+        _class: 'WORKPACKAGE',
+        _id: 5,
         code: '5',
         name: 'www.facebook.com',
-        start: new Date('2018-08-05'),
-        end: new Date('2018-10-30'),
         uri: 'https://twitter.com/',
-        children: []
+        schedule: {
+            start: moment().add(11, 'h').toDate(),
+            end: moment().add(12, 'h').toDate(),
+        },
+        children: [],
     },
 ];
