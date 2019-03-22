@@ -8,6 +8,7 @@
 
             <div class="contents">
                 <p>https://yanqirenshi.github.io/D3.Yabane/dist/beta/d3.yabane.js</p>
+                <p>https://yanqirenshi.github.io/D3.Yabane/dist/0.0.2/d3.yabane.js</p>
                 <p>https://yanqirenshi.github.io/D3.Yabane/dist/0.0.1/d3.yabane.js</p>
             </div>
         </div>
