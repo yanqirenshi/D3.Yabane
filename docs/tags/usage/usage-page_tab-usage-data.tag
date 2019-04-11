@@ -1,11 +1,13 @@
-<page02_page_tab_help>
+<usage-page_tab-data>
+
     <section class="section">
         <div class="container">
-            <h1 class="title">HELP</h1>
-            <h2 class="subtitle">
-            </h2>
+
             <div class="contents">
+                <usage-data></usage-data>
             </div>
+
         </div>
     </section>
-</page02_page_tab_help>
+
+</usage-page_tab-data>

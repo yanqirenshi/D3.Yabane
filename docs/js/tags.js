@@ -189,10 +189,10 @@ riot.tag2('home', '', '', '', function(opts) {
      this.on('update', () => { this.draw(); });
 });
 
-riot.tag2('home_page_root', '<section-header title="HOME"></section-header> <section class="section"> <div class="container"> <h1 class="title is-4">CDN</h1> <h2 class="subtitle"></h2> <div class="contents"> <p>https://yanqirenshi.github.io/D3.Yabane/dist/beta/d3.yabane.js</p> <p>https://yanqirenshi.github.io/D3.Yabane/dist/0.0.2/d3.yabane.js</p> <p>https://yanqirenshi.github.io/D3.Yabane/dist/0.0.1/d3.yabane.js</p> </div> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-4">Usage</h1> <h2 class="subtitle"></h2> <section class="section"> <div class="container"> <h1 class="title is-5">HTML</h1> <div class="contents"> <usage-html></usage-html> </div> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-5">Javascript</h1> <div class="contents"> <usage-js></usage-js> </div> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-5">Data</h1> <div class="contents"> <usage-data></usage-data> </div> </div> </section> </div> </section>', '', '', function(opts) {
+riot.tag2('home_page_root', '<section-header title="HOME"></section-header> <section class="section"> <div class="container"> <h1 class="title is-4">Description</h1> <h2 class="subtitle"></h2> <section class="section"> <div class="container"> <h1 class="title is-5">CDN</h1> <h2 class="subtitle"></h2> <div class="contents"> <p>https://yanqirenshi.github.io/D3.Yabane/dist/beta/d3.yabane.js</p> <p>https://yanqirenshi.github.io/D3.Yabane/dist/0.0.2/d3.yabane.js</p> <p>https://yanqirenshi.github.io/D3.Yabane/dist/0.0.1/d3.yabane.js</p> </div> </div> </section> </div> </section> <section class="section"> <div class="container"> <h1 class="title is-4">Dependencies</h1> <h2 class="subtitle"></h2> <div class="contents"> </div> </div> </section>', '', '', function(opts) {
 });
 
-riot.tag2('usage-data', '<p><pre>{code}</pre></p>', '', '', function(opts) {
+riot.tag2('usage-data', '<p><pre style="font-size:12px; line-height:13px;">{code}</pre></p>', '', '', function(opts) {
      this.code = [
          "var yabane_data = [",
          "    {",
@@ -280,7 +280,7 @@ riot.tag2('usage-data', '<p><pre>{code}</pre></p>', '', '', function(opts) {
      ].join('\n');
 });
 
-riot.tag2('usage-html', '<p><pre>{code}</pre></p>', '', '', function(opts) {
+riot.tag2('usage-html', '<p><pre style="font-size:12px; line-height:13px;">{code}</pre></p>', '', '', function(opts) {
      this.code = [
          '\<html\>',
          '    \<head\>',
@@ -298,7 +298,7 @@ riot.tag2('usage-html', '<p><pre>{code}</pre></p>', '', '', function(opts) {
      ].join('\n');
 });
 
-riot.tag2('usage-js', '<p><pre>{code}</pre></p>', '', '', function(opts) {
+riot.tag2('usage-js', '<p><pre style="font-size:12px; line-height:13px;">{code}</pre></p>', '', '', function(opts) {
      this.code = [
          "let now   = moment().millisecond(0).second(0).minute(0).hour(0);",
          "let start = moment(now).add(-2, 'w');",
@@ -347,45 +347,31 @@ riot.tag2('usage-js', '<p><pre>{code}</pre></p>', '', '', function(opts) {
      ].join('\n');
 });
 
-riot.tag2('page01', '', '', '', function(opts) {
+riot.tag2('usage-page_tab-data', '<section class="section"> <div class="container"> <div class="contents"> <usage-data></usage-data> </div> </div> </section>', '', '', function(opts) {
+});
+
+riot.tag2('usage-page_tab-html', '<section class="section"> <div class="container"> <div class="contents"> <usage-html></usage-html> </div> </div> </section>', '', '', function(opts) {
+});
+
+riot.tag2('usage-page_tab-js', '<section class="section"> <div class="container"> <div class="contents"> <usage-js></usage-js> </div> </div> </section>', '', '', function(opts) {
+});
+
+riot.tag2('usage-page_tab-readme', '<section class="section"> <div class="container"> </div> </section>', '', '', function(opts) {
+});
+
+riot.tag2('usage', '', '', '', function(opts) {
      this.mixin(MIXINS.page);
 
      this.on('mount', () => { this.draw(); });
      this.on('update', () => { this.draw(); });
 });
 
-riot.tag2('page01_page1', '<section-header-with-breadcrumb title="Page01 Sec 1"></section-header-with-breadcrumb>', '', '', function(opts) {
-});
-
-riot.tag2('page01_page2', '<section-header-with-breadcrumb title="Page01 Sec 2"></section-header-with-breadcrumb>', '', '', function(opts) {
-});
-
-riot.tag2('page01_page3', '<section-header-with-breadcrumb title="Page01 Sec 3"></section-header-with-breadcrumb>', '', '', function(opts) {
-});
-
-riot.tag2('page01_page_root', '<section-header title="Page01"></section-header> <section-container title="セクション" data="{sections()}"> <sections-list data="{opts.data}"> </sections-list> </section-container> <section-footer></section-footer>', '', '', function(opts) {
-     this.sections = () => {
-         let pages = STORE.get('site').pages;
-         let page = pages.find((d) => { return d.code=='page01'; });
-
-         return page.sections;
-     }
-});
-
-riot.tag2('page02', '', '', '', function(opts) {
-     this.mixin(MIXINS.page);
-
-     this.on('mount', () => { this.draw(); });
-     this.on('update', () => { this.draw(); });
-});
-
-riot.tag2('page02_page_root', '<section-header title="Page02"></section-header> <page-tabs core="{page_tabs}" callback="{clickTab}"></page-tabs> <div> <page02_page_tab_readme class="hide"></page02_page_tab_readme> <page02_page_tab_tab1 class="hide"></page02_page_tab_tab1> <page02_page_tab_tab2 class="hide"></page02_page_tab_tab2> <page02_page_tab_tab3 class="hide"></page02_page_tab_tab3> <page02_page_tab_help class="hide"></page02_page_tab_help> </div> <section-footer></section-footer>', '', '', function(opts) {
+riot.tag2('usage_page_root', '<section-header title="Usage"></section-header> <div style="padding-left:55px;"> <page-tabs core="{page_tabs}" callback="{clickTab}"></page-tabs> </div> <div> <usage-page_tab-readme class="hide"></usage-page_tab-readme> <usage-page_tab-data class="hide"></usage-page_tab-data> <usage-page_tab-js class="hide"></usage-page_tab-js> <usage-page_tab-html class="hide"></usage-page_tab-html> </div>', '', '', function(opts) {
      this.page_tabs = new PageTabs([
-         {code: 'readme', label: 'README', tag: 'page02_page_tab_readme' },
-         {code: 'tab1',   label: 'TAB1',   tag: 'page02_page_tab_tab1' },
-         {code: 'tab2',   label: 'TAB2',   tag: 'page02_page_tab_tab2' },
-         {code: 'tab3',   label: 'TAB3',   tag: 'page02_page_tab_tab3' },
-         {code: 'help',   label: 'HELP',   tag: 'page02_page_tab_help' },
+         {code: 'readme', label: 'README',     tag: 'usage-page_tab-readme' },
+         {code: 'data',   label: 'Data',       tag: 'usage-page_tab-data' },
+         {code: 'js',     label: 'Javascript', tag: 'usage-page_tab-js' },
+         {code: 'html',   label: 'HTML',       tag: 'usage-page_tab-html' },
      ]);
 
      this.on('mount', () => {
@@ -397,29 +383,4 @@ riot.tag2('page02_page_root', '<section-header title="Page02"></section-header> 
          if (this.page_tabs.switchTab(this.tags, data.code))
              this.update();
      };
-});
-
-riot.tag2('page02_page_tab_help', '<section class="section"> <div class="container"> <h1 class="title">HELP</h1> <h2 class="subtitle"> </h2> <div class="contents"> </div> </div> </section>', '', '', function(opts) {
-});
-
-riot.tag2('page02_page_tab_readme', '<section class="section"> <div class="container"> <h1 class="title">README</h1> <h2 class="subtitle"> </h2> <div class="contents"> </div> </div> </section>', '', '', function(opts) {
-});
-
-riot.tag2('page02_page_tab_tab1', '<section class="section"> <div class="container"> <h1 class="title">TAB1</h1> <h2 class="subtitle"> </h2> <div class="contents"> </div> </div> </section>', '', '', function(opts) {
-});
-
-riot.tag2('page02_page_tab_tab2', '<section class="section"> <div class="container"> <h1 class="title">TAB2</h1> <h2 class="subtitle"> </h2> <div class="contents"> </div> </div> </section>', '', '', function(opts) {
-});
-
-riot.tag2('page02_page_tab_tab3', '<section class="section"> <div class="container"> <h1 class="title">TAB3</h1> <h2 class="subtitle"> </h2> <div class="contents"> </div> </div> </section>', '', '', function(opts) {
-});
-
-riot.tag2('page03', '', '', '', function(opts) {
-     this.mixin(MIXINS.page);
-
-     this.on('mount', () => { this.draw(); });
-     this.on('update', () => { this.draw(); });
-});
-
-riot.tag2('page03_page_root', '<section-header title="Page03"></section-header> <section-footer></section-footer>', '', '', function(opts) {
 });

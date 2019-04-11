@@ -1,6 +1,6 @@
 <usage-html>
 
-    <p><pre>{code}</pre></p>
+    <p><pre style="font-size:12px; line-height:13px;">{code}</pre></p>
 
     <script>
      this.code = [
