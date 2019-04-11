@@ -20,10 +20,10 @@
 
         <script src="https://raw.githack.com/moment/moment/develop/moment.js"></script>
 
-        <script src="https://raw.githack.com/yanqirenshi/vanilla.js/master/dist/vanilla.js"></script>
+        <script src="https://yanqirenshi.github.io/Vanilla.js/dist/0.0.3/vanilla.js"></script>
 
         <script src="data.js"></script>
-        <script src="d3.js-yabane.js"></script>
+        <script src="d3.yabane.js"></script>
     </head>
     <body>
         <section class="hero">
@@ -52,8 +52,42 @@
          let end   = moment(now).add( 6, 'M');
          let selector = 'svg.chart-yabane';
 
+         this.options = {
+             stage: {
+                 selector: selector,
+             },
+             scale: {
+                 x: {
+                     cycle: 'days',
+                     tick: 88,
+                     start:  start,
+                     end:    end,
+                 },
+                 // y: null,
+                 margin: {},
+             },
+             header: {
+                 h:       33,
+                 padding: 5,
+                 fill:    {},
+                 stroke:  {},
+                 font:    {},
+             },
+             lane: {
+                 h: 33,
+                 w: null,
+                 padding: 5,
+             },
+             yabane: {
+                 color:  {},
+                 fill:   {},
+                 stroke: {},
+                 font:   {},
+             }
+         };
+
          let d3yabane = new D3jsYabane()
-             .config(selector, start, end)
+             .config(options)
              .makeStage()
              .data(yabane_data) // with sizing and positioning
              .draw();

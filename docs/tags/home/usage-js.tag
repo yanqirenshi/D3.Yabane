@@ -1,0 +1,52 @@
+<usage-js>
+    <p><pre>{code}</pre></p>
+
+    <script>
+     this.code = [
+         "let now   = moment().millisecond(0).second(0).minute(0).hour(0);",
+         "let start = moment(now).add(-2, 'w');",
+         "let end   = moment(now).add( 6, 'M');",
+         "let selector = 'svg.chart-yabane';",
+         "",
+         "this.options = {",
+         "    stage: {",
+         "        selector: selector,",
+         "    },",
+         "    scale: {",
+         "        x: {",
+         "            cycle: 'days',",
+         "            tick: 88,",
+         "            start:  start,",
+         "            end:    end,",
+         "        },",
+         "        // y: null,",
+         "        margin: {},",
+         "    },",
+         "    header: {",
+         "        h:       33,",
+         "        padding: 5,",
+         "        fill:    {},",
+         "        stroke:  {},",
+         "        font:    {},",
+         "    },",
+         "    lane: {",
+         "        h: 33,",
+         "        w: null,",
+         "        padding: 5,",
+         "    },",
+         "    yabane: {",
+         "        color:  {},",
+         "        fill:   {},",
+         "        stroke: {},",
+         "        font:   {},",
+         "    }",
+         "};",
+         "",
+         "let d3yabane = new D3jsYabane()",
+         "    .config(options)",
+         "    .makeStage()",
+         "    .data(yabane_data) // with sizing and positioning",
+         "    .draw();"
+     ].join('\n');
+    </script>
+</usage-js>

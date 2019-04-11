@@ -42,7 +42,19 @@ class D3jsYabaneData {
             _level: 1,
         };
     }
+    makeNodeDataChildren (data) {
+        let children = data.children;
+
+        if (!children)
+            return [];
+
+        if (Array.isArray(children))
+            return this.makePool(children);
+
+        return children;
+    }
     makeNodeData (data, parent) {
+
         let node_data = this.getTmepDataOfNode();
 
         let val = (src, trg, key) => {
@@ -61,6 +73,8 @@ class D3jsYabaneData {
 
         if (node_data.name=='')
             node_data.name = data.label;
+
+        data.children = this.makeNodeDataChildren(data);
 
         let children = this.makePool(this.makeNodeDatas(data.children.list, node_data));
 
@@ -538,7 +552,6 @@ class D3jsYabane {
      * **************************************************************** */
     makeStage (selector) {
         let config = this._config.stage;
-
         this._stage.svg = d3.select(config.selector);
 
         return this;
