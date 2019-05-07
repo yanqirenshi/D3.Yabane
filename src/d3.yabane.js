@@ -70,6 +70,7 @@ class D3jsYabaneData {
         val(data, node_data, 'result');
 
         val(data, node_data, 'name');
+        val(data, node_data, 'style');
 
         if (node_data.name=='')
             node_data.name = data.label;
@@ -721,6 +722,9 @@ class D3jsYabane {
                 }
             })
             .attr('fill', (d) => {
+                if (d.style && d.style.fill && d.style.fill.color)
+                    return d.style.fill.color;
+
                 if (d.children && d.children.length > 0)
                     return '#eebbcb';
 
@@ -730,20 +734,33 @@ class D3jsYabane {
                 return '#aacf53';
             })
             .attr('fill-opacity', (d) => {
+                if (d.style && d.style.fill && d.style.fill.opacity)
+                    return d.style.fill.opacity;
+
+
                 if (d.children && d.children.length > 0)
                     return '0.1';
+
                 return '1';
             })
             .attr('stroke', (d) => {
+                if (d.style && d.style.stroke && d.style.stroke.color)
+                    return d.style.stroke.color;
+
                 if (d.children && d.children.length > 0)
                     return 'none';
+
                 if (d.result.end)
                     return '#cccccc';
 
                 return  '#a8bf93';
             })
             .attr('stroke-width', (d) => {
+                if (d.style && d.style.stroke && d.style.stroke.size)
+                    return d.style.stroke.size;
+
                 if (d._level==1) return '2';
+
                 return '1';
             })
             .attr('start-time', (d) => {
@@ -896,8 +913,8 @@ class D3jsYabane {
             .attr('y1', (d) => { return d.y1 + 22; })
             .attr('x2', (d) => { return d.x2; })
             .attr('y2', (d) => { return d.y2; })
-            .attr('stroke-width', '2')
-            .attr('stroke', '#e198b4');
+            .attr('stroke-width', '3')
+            .attr('stroke', '#ea5506');
     }
     draw () {
         this.sizingHeader();
