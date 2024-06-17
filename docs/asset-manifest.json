@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Asshole/static/css/main.e6c13ad2.css",
+    "main.js": "/Asshole/static/js/main.9b1ecc9f.js",
+    "index.html": "/Asshole/index.html",
+    "main.e6c13ad2.css.map": "/Asshole/static/css/main.e6c13ad2.css.map",
+    "main.9b1ecc9f.js.map": "/Asshole/static/js/main.9b1ecc9f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.9b1ecc9f.js"
+  ]
+}

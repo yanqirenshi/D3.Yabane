@@ -1,142 +1,22 @@
-D3.js で 描く矢羽のマスタスケジュールです。
+# Asshole
 
-# 利用方法
+きっと何者にもなれない Asshole たちに告げる。
 
-## HTML
+- docs: [GitHub Pages](https://yanqirenshi.github.io/Asshole/)
+- npm: [@yanqirenshi/assh0le](https://www.npmjs.com/package/@yanqirenshi/assh0le)
 
-```html
-<head>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script>
-   <script src="index.js"></script>
-</head>
-<body>
-   <svg class="chart-yabane"></svg>
-</body>
-```
+# Description
 
-## Javascript
+不可逆なドキュメントを生み出す者達＝Asshole へのアンチテーゼとしてのプロジェクト。
 
-```js
-<script>start(data);</script>
-```
+## Author
 
-## Config
+* Satoshi Iwasaki (yanqirenshi@gmail.com)
 
-```javascript
-{
-    cycle: 'w',
-    tick: 88,
-    scale: {
-        x: null,
-        y: null,
-        start: null,
-        end: null,
-        margin: {}
-    },
-    header: {
-        h: 33,
-        padding: 5,
-        fill: {},
-        stroke: {},
-        font: {}
-    },
-    lane: {
-        h: 33,
-        w: null,
-        padding: 5
-    },
-    yabane: {
-        color: {},
-        fill: {},
-        stroke: {},
-        font: {}
-    }
-};
-```
+## Copyright
 
-### scale
+Copyright (c) 2018 Satoshi Iwasaki (yanqirenshi@gmail.com)
 
-| val    | description     |
-|--------|-----------------|
-| x      |                 |
-| y      |                 |
-| start  |                 |
-| end    |                 |
-| margin |                 |
+## License
 
-#### x
-#### y
-#### start
-#### end
-#### margin
-- before, after を指定します。
-- before=2, after=8 が初期値です。
-- 整数で指定します。
-
-#### dates
-
-
-
-
-
-
-
-### lane
-
-| val     | description |
-|---------+-------------|
-| h       |             |
-| w       |             |
-| padding |             |
-| fill    |             |
-| stroke  |             |
-
-#### cycle
-
-`d`, `w`, `daily`, `weekly` を指定します。
-
-#### h
-#### w
-#### tick
-#### padding
-
-
-### header
-
-| variabl | description |
-|---------|-------------|
-| h       |             |
-| padding |             |
-| font    |             |
-
-### yabane
-
-| variabl | description |
-|---------|-------------|
-| color   |             |
-| fill    |             |
-| stroke  |             |
-| font    |             |
-
-### data
-
-# データ構造
-
-## データ
-
-```json
-data=[ {矢羽} ... ]
-```
-
-## 矢羽
-
-```json
-{
-    "code": "YABANE001", 
-    "name": "矢羽 001", 
-    "start": new Date("2000-01-01")
-    "end": new Date("2000-01-12"), 
-    "detail": [ {矢羽}... ], 
-}
-```
-
+Licensed under the MIT License.
