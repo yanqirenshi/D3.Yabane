@@ -5,45 +5,17 @@ export default class Reaf extends Node {
     constructor (data) {
         super(data);
 
-        this._style = null;
-
         this._plan = plan2plan(data);
-
-        this._x = 0;
-        this._y = 0;
-        this._w = 0;
-        // this._h = 0;  // これは this._style から取得する。
     }
-    style (v) {
-        if (arguments.length===1)
-            this._style = v;
-
-        return this._style;
+    style () {
+        return this.style().body.yabane;
     }
     plan (v) {
         return this._plan;
     }
-    x (v) {
-        if (arguments.length===1)
-            this._x = v;
-
-        return this._x;
-    }
-    y (v) {
-        if (arguments.length===1)
-            this._y = v;
-
-        return this._y;
-    }
-    w (v) {
-        if (arguments.length===1)
-            this._w = v;
-
-        return this._w;
-    }
     h () {
         // TODO: this.style() が null を返すとき。
-        return this.style().body.yabane.h;
+        return this.style().h;
     }
     inputTemplate () {
         return {

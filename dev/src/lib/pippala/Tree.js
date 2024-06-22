@@ -11,6 +11,9 @@ export default class Tree {
     branches () {
         return this._branches.list;
     }
+    branch (id) {
+        return this._branches.ht[id] || null;
+    }
     reafs () {
         return this._reafs.list;
     }
@@ -20,6 +23,8 @@ export default class Tree {
     }
     compose (branches_data, reafs_data) {
         const fn = (pool, obj)=> {
+            obj.tree(this);
+
             const id = obj.id();
 
             pool.ht[id] = obj;
@@ -40,7 +45,7 @@ export default class Tree {
 
         // branches の木構造つくる。
         for (const branch of branches.list) {
-            const parent = branch.parent();
+            const parent = branch.parentId();
 
             if (parent) {
                 const parent_branch = branches.ht[parent];
@@ -56,7 +61,7 @@ export default class Tree {
 
         // reafs の木構造つくる。
         for (const reaf of reafs.list) {
-            const parent = reaf.parent();
+            const parent = reaf.parentId();
 
             const parent_branch = branches.ht[parent];
 

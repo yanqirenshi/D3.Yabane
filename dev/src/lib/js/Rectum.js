@@ -19,18 +19,34 @@ export default class Rectum extends Colon {
     scale () {
         return this._scale;
     }
-    makeData (graph_data) {
+    chewing (graph_data) {
         const scale = this.scale();
+
+        // Branch(WBS)  の x, y, w, h を決める。
+        let before = null;
+        for (const branch of graph_data.tree.branches()) {
+            // ここでセットするの？
+            branch.styles(graph_data.style);
+
+            branch.x(0);
+            branch.y(before ? before.nextY() : 0);
+
+            before = branch;
+        }
 
         // Reaf(Workpackage) の x, w, h を決める。 y は後で決める。
         // TODO: いったん y も決められるな。。。。
         for (const reaf of graph_data.tree.reafs()) {
+            // ここでセットするの？
+            reaf.styles(graph_data.style);
+
             const start = scale(reaf.plan().from);
             const end   = scale(reaf.plan().to);
             reaf.x(start);
             reaf.w(end - start);
 
-            reaf.style(graph_data.style);
+            const branch = reaf.parent();
+            console.log(branch.y());
         }
 
         return {};

@@ -51,28 +51,7 @@ export default function App() {
                 to:   '2024-06-30',
                 size: 333,
             },
-            style: {
-                head: {
-                    h: 33,
-                },
-                body: {
-                    h: null, // cal wbs/wp number
-                    w: null, // cal wbs plan(start, end)
-                    columns: {
-                        h: 88,
-                        w: 111,
-                    },
-                    row: {
-                        h: 88,
-                    },
-                    yabane: {
-                        h: 66,
-                    },
-                },
-                foot: {
-                    h: 33,
-                },
-            },
+            style: graph_style,
             tree: tree,
         });
     }, [data]);
@@ -81,7 +60,10 @@ export default function App() {
         if (!graph_data) return;
 
         rectum.makeScale(graph_data.scale);
-        rectum.data(rectum.makeData(graph_data));
+
+        const rectum_data = rectum.chewing(graph_data);
+
+        rectum.data(rectum_data);
     }, [graph_data]);
 
     return (
@@ -92,3 +74,28 @@ export default function App() {
         </div>
     );
 }
+
+const graph_style = {
+    head: {
+        h: 33,
+    },
+    body: {
+        h: null, // cal wbs/wp number
+        w: null, // cal wbs plan(start, end)
+        columns: {
+            h: 88,
+            w: 111,
+        },
+        row: {
+            w: 122,
+            h:  88,
+            margin: 3,
+        },
+        yabane: {
+            h: 66,
+        },
+    },
+    foot: {
+        h: 33,
+    },
+};
