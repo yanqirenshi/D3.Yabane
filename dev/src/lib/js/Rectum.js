@@ -5,8 +5,8 @@ import dayjs from 'dayjs';
 import Reafs from '../painters/Reafs.js';
 
 export default class Rectum extends Colon {
-    constructor () {
-        super();
+    constructor (v) {
+        super(v);
 
         this._scale = null;
     }
