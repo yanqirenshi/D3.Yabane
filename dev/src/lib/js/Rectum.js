@@ -50,9 +50,9 @@ export default class Rectum extends Colon {
         const branches = data.tree.branches();
         const reafs = data.tree.reafs();
 
-        new Branches(this).draw(branches);
-
         new Reafs(this).draw(reafs);
+
+        new Branches(this).draw(branches);
 
         return this;
     }

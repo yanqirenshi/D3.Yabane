@@ -14,10 +14,10 @@ export default class Branch extends Node {
         // TODO: this.styles() が null を返すとき。
         return this.style().w;
     }
-    h () {
-        // TODO: this.styles() が null を返すとき。
-        return this.style().h;
-    }
+    // h () {
+    //     // TODO: this.styles() が null を返すとき。
+    //     return this.style().h;
+    // }
     nextY () {
         return this.y()
             + this.margin().t
@@ -48,6 +48,10 @@ export default class Branch extends Node {
 
         this.x(0);
         this.y(before ? before.nextY() : 0);
+
+        const children = this.children().list;
+
+        this.h(children.length * styles.body.row.h);
 
         return this;
     }

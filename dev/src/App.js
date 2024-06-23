@@ -6,11 +6,13 @@ import { Rectum, Pippala } from './lib/index.js';
 import DATA from './data/DATA.js';
 
 const rectum = new Rectum({
-    grid: { draw: false },
+    grid: { draw: true },
     transform:  {
         k: 0.3,
-        x: 3500.0,
-        y: 300.0,
+        x: 0.0,
+        y: 0.0,
+        // x: 3500.0,
+        // y: 300.0,
     },
     svg: {
         // style: {
@@ -88,13 +90,13 @@ const graph_style = {
             w: 111,
         },
         row: {
-            w: 122,
-            h:  88,
+            w: 222,
+            h:  88 + 33, // TODO: うーん。。。
             margin: 33,
         },
         yabane: {
             head: 11,
-            h: 66,
+            h: 66,       // TODO: これは row - margin * 2 じゃないかな。。。
             margin: 33,
         },
     },
