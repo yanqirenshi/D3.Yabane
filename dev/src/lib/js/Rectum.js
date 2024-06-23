@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import dayjs from 'dayjs';
 
 import Reafs from '../painters/Reafs.js';
+import Branches from '../painters/Branches.js';
 
 export default class Rectum extends Colon {
     constructor (v) {
@@ -49,7 +50,7 @@ export default class Rectum extends Colon {
         const branches = data.tree.branches();
         const reafs = data.tree.reafs();
 
-        // console.log(branches);
+        new Branches(this).draw(branches);
 
         new Reafs(this).draw(reafs);
 
