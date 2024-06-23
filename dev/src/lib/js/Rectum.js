@@ -15,7 +15,9 @@ export default class Rectum extends Colon {
         const from_date = dayjs(scale.from).toDate();
         const to_date = dayjs(scale.to).toDate();
 
-        this._scale = d3.scaleTime([from_date, to_date], [0, scale.size]);
+        const start_x = (222 + 33);
+
+        this._scale = d3.scaleTime([from_date, to_date], [start_x, start_x + scale.size]);
 
         return this._scale;
     }

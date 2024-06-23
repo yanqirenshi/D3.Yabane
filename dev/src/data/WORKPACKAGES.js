@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
 
+import * as u from './uitls.js';
+
 const term = (start, end) => {
     return {
         from: start,
@@ -12,8 +14,9 @@ const WORKPACKAGES = [
         id: 1000,
         parent: 10,
         name: 'Task 1000',
-        plan: term('2023-09-01', '2024-09-30'),
-        result: term('2023-09-01', '2024-09-30'),
+        // 2023-09
+        plan: term(u.thisMonth_Start(), u.thisMonthPlus12_End()),
+        result: term(u.thisMonth_Start(), u.thisMonth_End()),
         progress: 50,
         style: {
             plan: { background: '#89c3eb'},
@@ -25,8 +28,9 @@ const WORKPACKAGES = [
         id: 1001,
         parent: 10,
         name: 'Task 1001',
-        plan: term('2023-10-01', '2023-10-31'),
-        result: term('2023-10-05', null),
+        // 2023-10
+        plan: term(u.thisMonthPlus1_Start(), u.thisMonthPlus1_End()),
+        result: term(u.thisMonthPlus1_Start(), null),
         progress: 95,
         url: 'https://www.google.com/',
     },
@@ -34,7 +38,8 @@ const WORKPACKAGES = [
         id: 2000,
         parent: 20,
         name: 'Task 2000',
-        plan: term('2023-11-01', '2023-11-30'),
+        // 2023-11
+        plan: term(u.thisMonthPlus2_Start(), u.thisMonthPlus2_End()),
         result: term('2023-10-29', '2023-11-25'),
     },
     {
