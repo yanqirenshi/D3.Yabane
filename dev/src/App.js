@@ -89,10 +89,12 @@ const graph_style = {
         row: {
             w: 122,
             h:  88,
-            margin: 3,
+            margin: 33,
         },
         yabane: {
+            head: 11,
             h: 66,
+            margin: 33,
         },
     },
     foot: {

@@ -7,6 +7,9 @@ export default class Branch extends Node {
 
         this._children = { ht:{}, list:[], };
     }
+    children () {
+        return this._children;
+    }
     w () {
         // TODO: this.styles() が null を返すとき。
         return this.style().w;
@@ -18,7 +21,7 @@ export default class Branch extends Node {
     nextY () {
         return this.y()
             + this.margin().t
-            + this.h()
+            + this.h() * this.children().list.length
             + this.margin().b;
     }
     inputTemplate () {
@@ -38,5 +41,14 @@ export default class Branch extends Node {
         const m = this.style().margin;
 
         return { l: m, r: m, t: m,b: m };
+    }
+    styling (scale, styles, before) {
+        // ここでセットするの？
+        this.styles(styles);
+
+        this.x(0);
+        this.y(before ? before.nextY() : 0);
+
+        return this;
     }
 };

@@ -1,21 +1,14 @@
 import dayjs from 'dayjs';
-import Node from './Node.js';
+import ArrowFeather from './ArrowFeather.js';
 
-export default class Reaf extends Node {
+export default class Reaf extends ArrowFeather {
     constructor (data) {
         super(data);
 
         this._plan = plan2plan(data);
     }
-    style () {
-        return this.style().body.yabane;
-    }
     plan (v) {
         return this._plan;
-    }
-    h () {
-        // TODO: this.style() が null を返すとき。
-        return this.style().h;
     }
     inputTemplate () {
         return {
@@ -28,6 +21,32 @@ export default class Reaf extends Node {
             result: { start: null, end: null },
             progress: 0,
         };
+    }
+    calY (branch, before) {
+        if (!before)
+            return branch.y() + branch.margin().t;
+
+        const styles = this.styles();
+
+        const start = before.y() + before.h();
+
+        return start + styles.body.yabane.margin;
+    }
+    styling (scale, styles, before) {
+        // ここでセットするの？
+        this.styles(styles);
+
+        // x, y, w, h の計算
+        const start = scale(this.plan().from);
+        const end   = scale(this.plan().to);
+        this.x(start);
+        this.w(end - start);
+
+        const branch = this.parent();
+        this.y(this.calY(branch, before));
+
+        // 描画用ポイント座標の計算
+        this.points(this.calPoints());
     }
 };
 
