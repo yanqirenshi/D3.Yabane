@@ -4,27 +4,50 @@ import dayjs from 'dayjs';
 
 import Reafs from '../painters/Reafs.js';
 import Branches from '../painters/Branches.js';
+import PTimescale from '../painters/Timescale.js';
+import Timescale from './Timescale.js';
 
 export default class Rectum extends Colon {
     constructor (v) {
         super(v);
 
+        this._timescale = null;
         this._scale = null;
+        this._cycle = null;
+        this._from = null;
+        this._to = null;
     }
     makeScale (scale) {
-        const from_date = dayjs(scale.from).toDate();
-        const to_date = dayjs(scale.to).toDate();
+        this._cycle = scale.cycle;
+        this._from  = dayjs(scale.from).startOf(this._cycle).toDate();
+        this._to    = dayjs(scale.to).endOf(this._cycle).toDate();
 
         const start_x = (222 + 33);
 
-        this._scale = d3.scaleTime([from_date, to_date], [start_x, start_x + scale.size]);
+        this._scale = d3.scaleTime(
+            [this._from, this._to],
+            [start_x, start_x + scale.size]);
 
         return this._scale;
     }
     scale () {
         return this._scale;
     }
+    cycle () {
+        return this._cycle;
+    }
+    from () {
+        return this._from;
+    }
+    to () {
+        return this._to;
+    }
+    timescale () {
+        return this._timescale;
+    }
     chewing (graph_data) {
+        this.makeScale(graph_data.scale);
+
         const scale = this.scale();
 
         // Branch(WBS)  の x, y, w, h を決める。
@@ -42,6 +65,8 @@ export default class Rectum extends Colon {
             before_branch = branch;
         }
 
+        this._timescale = new Timescale().build(this.from(), this.to(), this.cycle(), scale);
+
         return graph_data;
     }
     draw () {
@@ -55,6 +80,9 @@ export default class Rectum extends Colon {
         new Reafs(this).draw(reafs);
 
         new Branches(this).draw(branches);
+
+        const timescale = this.timescale();
+        new PTimescale(this).draw(timescale);
 
         return this;
     }

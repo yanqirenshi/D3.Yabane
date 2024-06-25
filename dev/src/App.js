@@ -14,7 +14,7 @@ const rectum = new Rectum({
     },
     svg: {
         style: {
-            background: '#fcfcfc',
+            background: '#ffffff',
             // background: '#f8ff8f',
             // backgroundImage: 'url(https:yanqirenshi.github.io/Mandara/assets/images/background/IMG_1519.JPG)',
             // backgroundRepeat: 'no-repeat',
@@ -44,28 +44,26 @@ export default function App() {
     const [graph_data, setGraphData] = useState(null);
 
     useEffect(()=> {
+        const from = '2024-06-01';
+        const to   = '2025-05-30';
+        const cycle = 'w';
+
+        // TODO: これは↓の useEffect じゃないかな
         const tree = new Pippala().build(data);
 
         setGraphData({
             scale: {
-                cycle: 'w',
-                from: '2024-06-01',
-                to:   '2024-06-30',
-                size: 333,
+                cycle: cycle, from: from, to: to, size: 3333,
             },
             style: graph_style,
-            tree: tree,
+            tree: tree, // TODO: これは↓の useEffect じゃないかな
         });
     }, [data]);
 
     useEffect(()=> {
         if (!graph_data) return;
 
-        rectum.makeScale(graph_data.scale);
-
-        const rectum_data = rectum.chewing(graph_data);
-
-        rectum.data(rectum_data);
+        rectum.data(rectum.chewing(graph_data));
     }, [graph_data]);
 
     return (
