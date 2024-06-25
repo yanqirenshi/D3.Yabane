@@ -50,7 +50,7 @@ export default function App() {
 
         // TODO: これは↓の useEffect じゃないかな
         const tree = new Pippala().build(data);
-
+        console.log(tree);
         setGraphData({
             scale: {
                 cycle: cycle, from: from, to: to, size: 3333,
@@ -88,7 +88,7 @@ const graph_style = {
         },
         row: {
             w: 222,
-            h:  88 + 33, // TODO: うーん。。。
+            h:  88,
             margin: 33,
         },
         yabane: {

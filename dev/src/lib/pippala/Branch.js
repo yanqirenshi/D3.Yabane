@@ -20,9 +20,10 @@ export default class Branch extends Node {
     // }
     nextY () {
         return this.y()
-            + this.margin().t
-            + this.h() * this.children().list.length
-            + this.margin().b;
+            // + this.margin().t
+            + this.h()
+            + this.margin().b
+        ;
     }
     inputTemplate () {
         return {

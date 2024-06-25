@@ -41,7 +41,7 @@ export default class Timescale {
             .attr("x1", d=> d.x)
             .attr("y1", d=> 0)
             .attr("x2", d=> d.x)
-            .attr("y2", d=> 6000)
+            .attr("y2", d=> 2555)
             .attr("stroke", d=> d.stroke)
             .attr("stroke-dasharray", d=> d.strokeDasharray);
     }

@@ -24,7 +24,7 @@ export default class Reaf extends ArrowFeather {
     }
     calY (branch, before) {
         if (!before)
-            return branch.y() + branch.margin().t;
+            return branch.y();
 
         const styles = this.styles();
 
