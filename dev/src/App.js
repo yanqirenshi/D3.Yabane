@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import dayjs from 'dayjs';
+
 import Asshole from './libs/index.js';
 import { Rectum, Pippala } from './lib/index.js';
 
@@ -44,13 +46,15 @@ export default function App() {
     const [graph_data, setGraphData] = useState(null);
 
     useEffect(()=> {
-        const from = '2024-06-01';
-        const to   = '2025-05-30';
+        const term = getTerm(data.workpackages);
+
+        const from = term.from;
+        const to   = term.to;
         const cycle = 'w';
 
         // TODO: これは↓の useEffect じゃないかな
         const tree = new Pippala().build(data);
-        console.log(tree);
+
         setGraphData({
             scale: {
                 cycle: cycle, from: from, to: to, size: 3333,
@@ -101,3 +105,20 @@ const graph_style = {
         h: 33,
     },
 };
+
+function getTerm (wps) {
+    const x = wps.reduce((term, wp)=> {
+        if (term.from===null || wp.plan.from < term.from)
+            term.from = wp.plan.from;
+
+        if (term.to===null || wp.plan.to > term.to)
+            term.to = wp.plan.to;
+
+        return term;
+    }, { from: null, to: null });
+
+    return {
+        from: dayjs(x.from).add(1, 'M').format('YYYY-MM-DD'),
+        to:   dayjs(x.to).add(-2, 'M').format('YYYY-MM-DD'),
+    };
+}

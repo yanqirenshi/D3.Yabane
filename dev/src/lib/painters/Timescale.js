@@ -7,42 +7,39 @@ export default class Timescale {
     rectum () {
         return this._rectum;
     }
-    // drawText (place, reafs) {
-    //     const selections =
-    //           place.selectAll("text.branch_label")
-    //           .data(reafs, (d)=> d.id());
+    drawLines (place, lines) {
+        const selections =
+              place.selectAll("line.date")
+              .data(lines, (d)=> d.date);
 
-    //     selections
-    //         .enter()
-    //         .append("text")
-    //         .attr('class', 'branch_label')
-    //         .attr('code', (d)=> d.id())
-    //         .attr("x", d=> d.x() + 33)
-    //         .attr("y", d=> d.y() + 33 + 10)
-    //         .attr("font-size", 33)
-    //         .text(d=> {
-    //             return `[${d.id()}] ${d._core.name}`;
-    //         });
-    // }
+        const draw = (s)=> {
+            s
+            .attr("x1", d=> d.x1)
+            .attr("y1", d=> d.y1)
+            .attr("x2", d=> d.x2)
+            .attr("y2", d=> d.y2)
+            .attr("stroke", d=> d.stroke)
+            .attr("stroke-dasharray", d=> d.strokeDasharray);
+        };
+
+        // remove
+        selections.exit().remove();
+
+        // add
+        draw(selections
+             .enter()
+             .append("line")
+             .attr('class', 'date')
+             .attr('code', (d)=> d.date));
+
+        // update
+        draw(selections);
+    }
     draw (timescale) {
         const rectum = this.rectum();
 
         const place = rectum.layer('background');
 
-        const selections =
-              place.selectAll("line.date")
-              .data(timescale, (d)=> d.date);
-
-        selections
-            .enter()
-            .append("line")
-            .attr('class', 'date')
-            .attr('code', (d)=> d.date)
-            .attr("x1", d=> d.x)
-            .attr("y1", d=> 0)
-            .attr("x2", d=> d.x)
-            .attr("y2", d=> 2555)
-            .attr("stroke", d=> d.stroke)
-            .attr("stroke-dasharray", d=> d.strokeDasharray);
+        this.drawLines(place, timescale.lines);
     }
 }

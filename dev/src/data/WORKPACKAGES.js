@@ -14,9 +14,8 @@ const WORKPACKAGES = [
         id: 1000,
         parent: 10,
         name: 'Task 1000',
-        // 2023-09
-        plan: term(u.thisMonth_Start(), u.thisMonthPlus12_End()),
-        result: term(u.thisMonth_Start(), u.thisMonth_End()),
+        plan: term('2023-09-01', '2024-09-30'),
+        result: term('2023-09-01', null),
         progress: 50,
         style: {
             plan: { background: '#89c3eb'},
@@ -28,9 +27,8 @@ const WORKPACKAGES = [
         id: 1001,
         parent: 10,
         name: 'Task 1001',
-        // 2023-10
-        plan: term(u.thisMonthPlus1_Start(), u.thisMonthPlus1_End()),
-        result: term(u.thisMonthPlus1_Start(), null),
+        plan: term('2023-10-01', '2023-10-31'),
+        result: term('2023-10-05', null),
         progress: 95,
         url: 'https://www.google.com/',
     },
@@ -38,9 +36,8 @@ const WORKPACKAGES = [
         id: 2000,
         parent: 20,
         name: 'Task 2000',
-        // 2023-11
-        plan: term(u.thisMonthPlus2_Start(), u.thisMonthPlus2_End()),
-        result: term('2023-10-29', '2023-11-25'),
+        plan: term('2023-11-01', '2023-11-30'),
+        result: term('2023-11-03', null),
     },
     {
         id: 3000,
