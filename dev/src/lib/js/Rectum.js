@@ -5,7 +5,10 @@ import dayjs from 'dayjs';
 import Reafs from '../painters/Reafs.js';
 import Branches from '../painters/Branches.js';
 import PTimescale from '../painters/Timescale.js';
+import PRows from '../painters/Rows.js';
+
 import Timescale from './Timescale.js';
+import Rows from './Rows.js';
 
 export default class Rectum extends Colon {
     constructor (v) {
@@ -16,6 +19,8 @@ export default class Rectum extends Colon {
         this._cycle = null;
         this._from = null;
         this._to = null;
+
+        this._rows = [];
     }
     makeScale (scale) {
         this._cycle = scale.cycle;
@@ -45,6 +50,9 @@ export default class Rectum extends Colon {
     timescale () {
         return this._timescale;
     }
+    rows () {
+        return this._rows;
+    }
     chewing (graph_data) {
         this.makeScale(graph_data.scale);
 
@@ -67,6 +75,8 @@ export default class Rectum extends Colon {
 
         this._timescale = new Timescale().build(this.from(), this.to(), this.cycle(), scale);
 
+        this._rows = new Rows().build(graph_data.tree.branches());
+
         return graph_data;
     }
     draw () {
@@ -74,15 +84,17 @@ export default class Rectum extends Colon {
 
         if (!data) return this;
 
-        const branches = data.tree.branches();
         const reafs = data.tree.reafs();
-
         new Reafs(this).draw(reafs);
 
+        const branches = data.tree.branches();
         new Branches(this).draw(branches);
 
         const timescale = this.timescale();
         new PTimescale(this).draw(timescale);
+
+        const rows = this.rows();
+        new PRows(this).draw(rows);
 
         return this;
     }
