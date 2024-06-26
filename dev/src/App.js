@@ -91,7 +91,7 @@ const graph_style = {
             w: 111,
         },
         row: {
-            w: 222,
+            w: 333,
             h:  88,
             margin: 33,
         },

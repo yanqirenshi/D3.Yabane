@@ -9,18 +9,13 @@ export default class Branches extends ArrowFeather {
     rectum () {
         return this._rectum;
     }
-    add (selections) {
-        const added_selections =
-              selections
-              .enter()
-              .append("rect")
-              .attr('class', 'branch')
-              .attr('code', (d)=> d.id());
+    draw (branches) {
+        const rectum = this.rectum();
 
-        this.update(added_selections);
-    }
-    update (selections) {
-        selections
+        const place = rectum.layer('foreground');
+
+        const draw = (targets)=> {
+            targets
             .attr("x", d=> d.x())
             .attr("y", d=> d.y())
             .attr("width",  d=> d.w())
@@ -28,20 +23,23 @@ export default class Branches extends ArrowFeather {
             .attr("fill","#fff")
             .attr("stroke-width",4)
             .attr("stroke","#0e9aa7");
-    }
-    remove (selections) {
-    }
-    draw (branches) {
-        const rectum = this.rectum();
-
-        const place = rectum.layer('foreground');
+        };
 
         const selections =
               place.selectAll("rect.branch")
               .data(branches, (d)=> d.id());
 
-        this.add(selections);
-        this.update(selections);
-        this.remove(selections);
+        // remove
+        selections.exit().remove();
+
+        // add
+        draw(selections
+             .enter()
+             .append("rect")
+             .attr('class', 'branch')
+             .attr('code', (d)=> d.id()));
+
+        // update
+        draw(selections);
     }
 }
