@@ -10,21 +10,32 @@ export default class Reafs extends ArrowFeather {
         return this._rectum;
     }
     drawText (place, reafs) {
+        const draw = (targets)=> {
+            targets
+                .attr("x", d=> d.x() + 33)
+                .attr("y", d=> d.y() + 33 + 10)
+                .attr("font-size", 33)
+                .text(d=> {
+                    return `[${d.id()}] ${d._core.name}`;
+                });
+        };
+
         const selections =
               place.selectAll("text.branch_label")
               .data(reafs, (d)=> d.id());
 
-        selections
-            .enter()
-            .append("text")
-            .attr('class', 'branch_label')
-            .attr('code', (d)=> d.id())
-            .attr("x", d=> d.x() + 33)
-            .attr("y", d=> d.y() + 33 + 10)
-            .attr("font-size", 33)
-            .text(d=> {
-                return `[${d.id()}] ${d._core.name}`;
-            });
+        // remove
+        selections.exit().remove();
+
+        // add
+        draw(selections
+             .enter()
+             .append("text")
+             .attr('class', 'branch_label')
+             .attr('code', (d)=> d.id()));
+
+        // update
+        draw(selections);
     }
     draw (reafs) {
         const rectum = this.rectum();

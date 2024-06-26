@@ -57,6 +57,8 @@ export default class Timescale {
             out.push({
                 label: tmp.format('YYYY-MM'),
                 x: scale(tmp.toDate()),
+                y: -22,
+                font: { size: 44 },
             });
 
             tmp = tmp.add(1, 'month');
