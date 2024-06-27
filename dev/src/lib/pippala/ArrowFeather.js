@@ -1,5 +1,20 @@
 import Node from './Node.js';
 
+//
+//  - +-------------------+
+//  | |  padding.t
+//  | |   +-----------+
+//  | |   |           |
+//  h | l |           | r           +
+//  | |   |           |
+//  | |   +-----------+
+//  | |          b
+//  - +-------------------+
+//
+//                        |--head---|
+//    |---------w-------------------|
+//
+//
 export default class ArrowFeather extends Node {
     constructor (data) {
         super(data);

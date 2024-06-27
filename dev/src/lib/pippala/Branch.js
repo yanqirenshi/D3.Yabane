@@ -1,4 +1,3 @@
-// import dayjs from 'dayjs';
 import Node from './Node.js';
 
 export default class Branch extends Node {
@@ -20,7 +19,7 @@ export default class Branch extends Node {
     // }
     nextY () {
         return this.y()
-            // + this.margin().t
+        // + this.margin().t
             + this.h()
             + this.margin().b
         ;
@@ -43,16 +42,39 @@ export default class Branch extends Node {
 
         return { l: m, r: m, t: m,b: m };
     }
+    calH (styles) {
+        const children = this.children().list;
+        const len = children.length;
+
+        const sytle_yabane = styles.body.yabane;
+
+        return len * sytle_yabane.h + (len - 1) * sytle_yabane.margin;
+    }
+    //       -------------------------- ---------------------------------
+    //      |      margin.t            |
+    //  --- |   +------------------+   | --------------------------------
+    //   |  |   |  padding.t       |   |
+    //   |  |   | ---------------- |   |   reaf
+    //   |  |   |   |          |   |   |
+    //   h  | l | l |          | r | r |   area
+    //   |  |   |   |          |   |   |
+    //   |  |   | ---------------- |   |
+    //   |  |   |  padding.b       |   |
+    //  --- |   +------------------+   | --------------------------------
+    //      |      maring.b            |
+    //       -------------------------- ---------------------------------
+    //
+    //          |--------w---------|
+    //
     styling (scale, styles, before) {
+
         // ここでセットするの？
         this.styles(styles);
 
         this.x(0);
         this.y(before ? before.nextY() : 0);
 
-        const children = this.children().list;
-
-        this.h(children.length * styles.body.row.h);
+        this.h(this.calH(styles));
 
         return this;
     }

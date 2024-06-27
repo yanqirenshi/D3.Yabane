@@ -10,7 +10,8 @@ import DATA from './data/DATA.js';
 const rectum = new Rectum({
     grid: { draw: false },
     transform:  {
-        k: 0.2,
+        k: 1,
+        // k: 0.2,
         x: 0.0,
         y: 0.0,
     },
