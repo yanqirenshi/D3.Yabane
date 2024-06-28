@@ -1,5 +1,21 @@
 import Node from './Node.js';
 
+//       -------------------------- ---------------------------------
+//      |      margin.t            |
+//  --- |   +------------------+   | --------------------------------
+//   |  |   |  padding.t       |   |
+//   |  |   | ---------------- |   |   reaf
+//   |  |   |   |          |   |   |
+//   h  | l | l |          | r | r |   area
+//   |  |   |   |          |   |   |
+//   |  |   | ---------------- |   |
+//   |  |   |  padding.b       |   |
+//  --- |   +------------------+   | --------------------------------
+//      |      maring.b            |
+//       -------------------------- ---------------------------------
+//
+//          |--------w---------|
+//
 export default class Branch extends Node {
     constructor (data) {
         super(data);
@@ -42,6 +58,11 @@ export default class Branch extends Node {
 
         return { l: m, r: m, t: m,b: m };
     }
+    calX () {
+        const style = this.style();
+
+        return 0;
+    }
     calH (styles) {
         const children = this.children().list;
         const len = children.length;
@@ -50,28 +71,13 @@ export default class Branch extends Node {
 
         return len * sytle_yabane.h + (len - 1) * sytle_yabane.margin;
     }
-    //       -------------------------- ---------------------------------
-    //      |      margin.t            |
-    //  --- |   +------------------+   | --------------------------------
-    //   |  |   |  padding.t       |   |
-    //   |  |   | ---------------- |   |   reaf
-    //   |  |   |   |          |   |   |
-    //   h  | l | l |          | r | r |   area
-    //   |  |   |   |          |   |   |
-    //   |  |   | ---------------- |   |
-    //   |  |   |  padding.b       |   |
-    //  --- |   +------------------+   | --------------------------------
-    //      |      maring.b            |
-    //       -------------------------- ---------------------------------
-    //
-    //          |--------w---------|
-    //
     styling (scale, styles, before) {
 
         // ここでセットするの？
         this.styles(styles);
 
-        this.x(0);
+        this.x(this.calX(styles));
+
         this.y(before ? before.nextY() : 0);
 
         this.h(this.calH(styles));

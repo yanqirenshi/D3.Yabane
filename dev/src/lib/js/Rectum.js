@@ -22,12 +22,12 @@ export default class Rectum extends Colon {
 
         this._rows = [];
     }
-    makeScale (scale) {
+    makeScale (scale, style) {
         this._cycle = scale.cycle;
         this._from  = dayjs(scale.from).startOf(this._cycle).toDate();
         this._to    = dayjs(scale.to).endOf(this._cycle).toDate();
 
-        const start_x = (222 + 33);
+        const start_x = style.body.row.w + style.body.row.margin;
 
         this._scale = d3.scaleTime(
             [this._from, this._to],
@@ -53,29 +53,38 @@ export default class Rectum extends Colon {
     rows () {
         return this._rows;
     }
+    style () {
+        if (!this.data())
+            return {};
+
+        return this.data().style;
+    }
     chewing (graph_data) {
-        this.makeScale(graph_data.scale);
+        const style = graph_data.style;
+
+        this.makeScale(graph_data.scale, style);
 
         const scale = this.scale();
 
         // Branch(WBS)  の x, y, w, h を決める。
         let before_branch = null;
         for (const branch of graph_data.tree.branches()) {
-            branch.styling(scale, graph_data.style, before_branch);
+            branch.styling(scale, style, before_branch);
 
             // Reaf(Workpackage) の x, y, w, h を決める。
             let before_reaf = null;
             for (const reaf of branch.children().list) {
-                reaf.styling(scale, graph_data.style, before_reaf);
+                reaf.styling(scale, style, before_reaf);
                 before_reaf = reaf;
             }
 
             before_branch = branch;
         }
 
+        // constructor で this を渡す。
         this._timescale = new Timescale().build(this.from(), this.to(), this.cycle(), scale);
 
-        this._rows = new Rows().build(graph_data.tree.branches());
+        this._rows = new Rows(this).build(style, graph_data.tree.branches());
 
         return graph_data;
     }
