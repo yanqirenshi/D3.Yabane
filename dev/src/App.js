@@ -10,10 +10,9 @@ import DATA from './data/DATA.js';
 const rectum = new Rectum({
     grid: { draw: false },
     transform:  {
-        k: 1,
-        // k: 0.2,
-        x: 0.0,
-        y: 0.0,
+        k: 0.3,
+        x: 100.0,
+        y: 100.0,
     },
     svg: {
         style: {
@@ -58,7 +57,10 @@ export default function App() {
 
         setGraphData({
             scale: {
-                cycle: cycle, from: from, to: to, size: 3333,
+                cycle: cycle,
+                from: from,
+                to: to,
+                size: graph_style.stage.w,
             },
             style: graph_style,
             tree: tree, // TODO: これは↓の useEffect じゃないかな
@@ -81,6 +83,9 @@ export default function App() {
 }
 
 const graph_style = {
+    stage: {
+        w: 3333,
+    },
     head: {
         h: 33,
     },
@@ -95,11 +100,13 @@ const graph_style = {
             w: 333,
             h:  88,
             margin: 33,
+            stroke: { color: '#aaa' },
         },
         yabane: {
             head: 11,
             h: 66,       // TODO: これは row - margin * 2 じゃないかな。。。
             margin: 33,
+            font: { size: 33 },
         },
     },
     foot: {

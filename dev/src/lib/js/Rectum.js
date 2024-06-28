@@ -81,10 +81,11 @@ export default class Rectum extends Colon {
             before_branch = branch;
         }
 
-        // constructor で this を渡す。
-        this._timescale = new Timescale().build(this.from(), this.to(), this.cycle(), scale);
+        const branches = graph_data.tree.branches();
 
-        this._rows = new Rows(this).build(style, graph_data.tree.branches());
+        this._timescale = new Timescale(this).build(style, branches);
+
+        this._rows = new Rows(this).build(style, branches);
 
         return graph_data;
     }

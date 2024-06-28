@@ -2,9 +2,13 @@ import Colon from '../../libs/js/Colon.js';
 import dayjs from 'dayjs';
 
 export default class Timescale {
-    // constructor (v) {
-    // }
-    makeWeekLines (dates, from, to, cycle, scale) {
+    constructor (rectum) {
+        this._rectum = rectum;
+    }
+    rectum () {
+        return this._rectum;
+    }
+    makeWeekLines (dates, from, to, cycle, scale, h) {
         let tmp = dayjs(from);
         while (tmp.isBefore(to)) {
             const date = tmp.toDate();
@@ -16,7 +20,7 @@ export default class Timescale {
             dates[date_str] = {
                 date: tmp.format('YYYY-MM-DD'),
                 x1: x, y1: 0,
-                x2: x, y2: 2555,
+                x2: x, y2: h,
                 type: cycle,
                 stroke: '#aaa',
                 strokeDasharray: '10 10',
@@ -25,7 +29,7 @@ export default class Timescale {
             tmp = tmp.add(1, cycle);
         }
     }
-    makeMonthLines (dates, from, to, scale) {
+    makeMonthLines (dates, from, to, scale, h) {
         let tmp = dayjs(from).endOf('month').add(1, 'd');
         while (tmp.isBefore(to)) {
             const date = tmp.toDate();
@@ -37,7 +41,7 @@ export default class Timescale {
             dates[date_str] = {
                 date: tmp.format('YYYY-MM-DD'),
                 x1: x, y1: 0,
-                x2: x, y2: 2555,
+                x2: x, y2: h,
                 type: 'month',
                 stroke: '#333',
             };
@@ -66,17 +70,33 @@ export default class Timescale {
 
         return out;
     }
-    build (from_str, to_str, cycle, scale) {
+    build (style, branches) {
+        const rectum = this.rectum();
+
+        const from_str = rectum.from();
+        const to_str = rectum.to();
+        const cycle = rectum.cycle();
+        const scale = rectum.scale();
+
         const from = dayjs(from_str);
         const to   = dayjs(to_str);
+
+        let last = null;
+        for (const branch of branches) {
+            if (last && branch.y() < last.y())
+                continue;
+            last = branch;
+        }
+
+        const h = last.y() + last.h() + style.body.row.margin;
 
         const dates = {};
 
         // 週次の線を引く。
-        this.makeWeekLines(dates, from, to, cycle, scale);
+        this.makeWeekLines(dates, from, to, cycle, scale, h);
 
         // 月次の線を引く。
-        this.makeMonthLines(dates, from, to, scale);
+        this.makeMonthLines(dates, from, to, scale, h);
 
         // 月のラベル
         const labels = this.makeManthLabels(from, to, scale);
