@@ -53,7 +53,7 @@ export default function App() {
         const cycle = 'w';
 
         // TODO: これは↓の useEffect じゃないかな
-        const tree = new Pippala().build(data);
+        const tree = new Pippala().build(from, to, data);
 
         setGraphData({
             scale: {
