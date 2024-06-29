@@ -21,7 +21,7 @@ export default class Reafs extends ArrowFeather {
         };
 
         const selections =
-              place.selectAll("text.branch_label")
+              place.selectAll("text.reaf_label")
               .data(reafs, (d)=> d.id());
 
         // remove
@@ -31,7 +31,7 @@ export default class Reafs extends ArrowFeather {
         draw(selections
              .enter()
              .append("text")
-             .attr('class', 'branch_label')
+             .attr('class', 'reaf_label')
              .attr('code', (d)=> d.id()));
 
         // update

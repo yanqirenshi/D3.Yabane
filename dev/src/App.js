@@ -101,6 +101,7 @@ const graph_style = {
             h:  88,
             margin: 33,
             stroke: { color: '#aaa' },
+            font: { size: 33 },
         },
         yabane: {
             head: 11,

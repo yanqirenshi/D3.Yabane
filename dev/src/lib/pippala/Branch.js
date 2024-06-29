@@ -22,6 +22,9 @@ export default class Branch extends Node {
 
         this._children = { ht:{}, list:[], };
     }
+    name () {
+        return this.core().name;
+    }
     children () {
         return this._children;
     }

@@ -25,7 +25,7 @@ export default class Now {
             x2: x,
             y2: h,
             stroke: {
-                color: '#f00',
+                color: '#eb6101',
                 width: 5,
             }
         };
