@@ -6,9 +6,11 @@ import Reafs from '../painters/Reafs.js';
 import Branches from '../painters/Branches.js';
 import PTimescale from '../painters/Timescale.js';
 import PRows from '../painters/Rows.js';
+import PNow from '../painters/Now.js';
 
 import Timescale from './Timescale.js';
 import Rows from './Rows.js';
+import Now from './Now.js';
 
 export default class Rectum extends Colon {
     constructor (v) {
@@ -21,6 +23,7 @@ export default class Rectum extends Colon {
         this._to = null;
 
         this._rows = [];
+        this._now = null;
     }
     makeScale (scale, style) {
         this._cycle = scale.cycle;
@@ -53,6 +56,9 @@ export default class Rectum extends Colon {
     rows () {
         return this._rows;
     }
+    now () {
+        return this._now;
+    }
     style () {
         if (!this.data())
             return {};
@@ -74,7 +80,10 @@ export default class Rectum extends Colon {
             // Reaf(Workpackage) の x, y, w, h を決める。
             let before_reaf = null;
             for (const reaf of branch.children().list) {
-                reaf.styling(scale, style, before_reaf);
+                reaf.styling(
+                    graph_data.scale,
+                    scale,
+                    style, before_reaf);
                 before_reaf = reaf;
             }
 
@@ -86,6 +95,8 @@ export default class Rectum extends Colon {
         this._timescale = new Timescale(this).build(style, branches);
 
         this._rows = new Rows(this).build(style, branches);
+
+        this._now = new Now(this).build(style, branches, scale);
 
         return graph_data;
     }
@@ -100,11 +111,11 @@ export default class Rectum extends Colon {
         const branches = data.tree.branches();
         new Branches(this).draw(branches);
 
-        const timescale = this.timescale();
-        new PTimescale(this).draw(timescale);
+        new PTimescale(this).draw(this.timescale());
 
-        const rows = this.rows();
-        new PRows(this).draw(rows);
+        new PRows(this).draw(this.rows());
+
+        new PNow(this).draw(this.now());
 
         return this;
     }

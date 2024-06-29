@@ -127,6 +127,6 @@ function getTerm (wps) {
 
     return {
         from: dayjs(x.from).add(1, 'M').format('YYYY-MM-DD'),
-        to:   dayjs(x.to).add(-2, 'M').format('YYYY-MM-DD'),
+        to:   dayjs(x.to).add(-2, 'M').startOf('M').format('YYYY-MM-DD'),
     };
 }

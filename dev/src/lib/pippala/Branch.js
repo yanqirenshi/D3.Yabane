@@ -61,7 +61,7 @@ export default class Branch extends Node {
     calX () {
         const style = this.style();
 
-        return 0;
+        return style.margin * -1 * 1;
     }
     calH (styles) {
         const children = this.children().list;

@@ -29,9 +29,15 @@ export default class Timescale {
             tmp = tmp.add(1, cycle);
         }
     }
+    ensureMonthStart (from) {
+        const start = dayjs(from);
+        if (1===start.date())
+            return start;
+        return start.endOf('month').add(1, 'd');
+    };
     makeMonthLines (dates, from, to, scale, h) {
-        let tmp = dayjs(from).endOf('month').add(1, 'd');
-        while (tmp.isBefore(to)) {
+        let tmp = this.ensureMonthStart(from);
+        while (tmp.isBefore(to) || tmp.isSame(to)) {
             const date = tmp.toDate();
 
             const date_str = tmp.format('YYYY-MM-DD');
@@ -52,8 +58,8 @@ export default class Timescale {
     makeManthLabels (from, to, scale) {
         const out = [];
 
-        let tmp = dayjs(from).endOf('month').add(1, 'd');
-        while (tmp.isBefore(to)) {
+        let tmp = this.ensureMonthStart(from);
+        while (tmp.isBefore(to) || tmp.isSame(to)) {
             const date = tmp.toDate();
 
             const date_str = tmp.format('YYYY-MM-DD');
@@ -79,7 +85,7 @@ export default class Timescale {
         const scale = rectum.scale();
 
         const from = dayjs(from_str);
-        const to   = dayjs(to_str);
+        const to   = dayjs(to_str).add(1,'cycle');
 
         let last = null;
         for (const branch of branches) {

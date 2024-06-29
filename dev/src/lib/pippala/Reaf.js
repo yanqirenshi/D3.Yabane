@@ -32,13 +32,14 @@ export default class Reaf extends ArrowFeather {
 
         return start + styles.body.yabane.margin;
     }
-    styling (scale, styles, before) {
+    styling (scale, timescale, styles, before) {
         // ここでセットするの？
         this.styles(styles);
 
         // x, y, w, h の計算
-        const start = scale(this.plan().from);
-        const end   = scale(this.plan().to);
+        const term = fixTerm (scale, this.plan());
+        const start = timescale(term.start);
+        const end   = timescale(term.end);
         this.x(start);
         this.w(end - start);
 
@@ -70,4 +71,19 @@ function str2dt (str) {
         return null;
 
     return dt;
+}
+
+function fixTerm (scale, term) {
+    const scale_from = dayjs(scale.from);
+    const scale_to = dayjs(scale.to);
+
+    const term_from = dayjs(term.from);
+    const term_to = dayjs(term.to);
+
+    const cycle = scale.cycle;
+
+    return {
+        start: (term_from.isBefore(scale_from) ? scale_from.add(-0.5, cycle) : term_from).toDate(),
+        end: (term_to.isAfter(scale_to) ? scale_to.add(2, cycle) : term_to).toDate()
+    };
 }
