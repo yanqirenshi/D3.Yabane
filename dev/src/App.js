@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 
 import Asshole from './libs/index.js';
-import { Rectum, Pippala } from './lib/index.js';
+import D3Yabane, { Rectum, Pippala } from './lib/index.js';
 
 import DATA from './data/DATA.js';
 
@@ -76,7 +76,7 @@ export default function App() {
     return (
         <div style={style}>
           <div style={style.graph_area}>
-            <Asshole id="asshole-graph" rectum={rectum}/>
+            <D3Yabane id="asshole-graph" rectum={rectum}/>
           </div>
         </div>
     );

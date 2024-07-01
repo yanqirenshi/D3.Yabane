@@ -21,6 +21,9 @@ Object.defineProperty(exports, "Timescale", {
     return _Timescale.default;
   }
 });
+exports.default = void 0;
+
+var _D3Yabane = _interopRequireDefault(require("./components/D3Yabane.js"));
 
 var _Rectum = _interopRequireDefault(require("./js/Rectum.js"));
 
@@ -29,3 +32,6 @@ var _Timescale = _interopRequireDefault(require("./js/Timescale.js"));
 var _Pippala = _interopRequireDefault(require("./pippala/Pippala.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = _D3Yabane.default;
+exports.default = _default;
