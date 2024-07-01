@@ -1,4 +1,3 @@
-import Colon from '../../libs/js/Colon.js';
 import dayjs from 'dayjs';
 
 export default class Timescale {

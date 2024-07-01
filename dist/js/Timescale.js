@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _Colon = _interopRequireDefault(require("../../libs/js/Colon.js"));
-
 var _dayjs = _interopRequireDefault(require("dayjs"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

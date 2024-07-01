@@ -1,4 +1,4 @@
-import Colon from '../../libs/js/Colon.js';
+import { Colon } from '@yanqirenshi/assh0le';
 import * as d3 from 'd3';
 import dayjs from 'dayjs';
 
