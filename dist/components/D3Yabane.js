@@ -9,7 +9,7 @@ exports.default = D3Yabane;
 
 var _react = _interopRequireWildcard(require("react"));
 
-var _index = _interopRequireDefault(require("../../libs/index.js"));
+var _Asshole = _interopRequireDefault(require("./Asshole.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20,7 +20,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 // import Asshole from '@yanqirenshi/assh0le';
 function D3Yabane(props) {
   var rectum = props.rectum;
-  return /*#__PURE__*/_react.default.createElement(_index.default, {
+  return /*#__PURE__*/_react.default.createElement(_Asshole.default, {
     id: "d3-yabane-graph",
     rectum: rectum
   });

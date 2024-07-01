@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // import Asshole from '@yanqirenshi/assh0le';
-import Asshole from '../../libs/index.js';
+import Asshole from './Asshole.js';
 
 export default function D3Yabane (props) {
     const rectum = props.rectum;
