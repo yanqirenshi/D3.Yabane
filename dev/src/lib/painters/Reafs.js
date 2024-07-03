@@ -18,9 +18,7 @@ export default class Reafs extends ArrowFeather {
                 .attr("x", d=> d.x() + 33)
                 .attr("y", d=> d.y() + 33 + 10)
                 .attr("font-size", 33)
-                .text(d=> {
-                    return `[${d.id()}] ${d._core.name}`;
-                });
+                .text(d=> d._core.name);
         };
 
         const selections =

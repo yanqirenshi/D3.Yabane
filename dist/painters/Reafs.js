@@ -71,7 +71,7 @@ var Reafs = /*#__PURE__*/function (_ArrowFeather) {
         }).attr("y", function (d) {
           return d.y() + 33 + 10;
         }).attr("font-size", 33).text(function (d) {
-          return "[".concat(d.id(), "] ").concat(d._core.name);
+          return d._core.name;
         });
       };
 
