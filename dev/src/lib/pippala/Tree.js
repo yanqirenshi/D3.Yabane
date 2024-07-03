@@ -14,6 +14,11 @@ export default class Tree {
     branch (id) {
         return this._branches.ht[id] || null;
     }
+    reafsByBnraches () {
+        return this._branches.list.reduce((list, b)=> {
+            return list.concat(b.sortedChildren());
+        }, []);
+    }
     reafs () {
         return this._reafs.list;
     }

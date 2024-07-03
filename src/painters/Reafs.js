@@ -9,6 +9,9 @@ export default class Reafs extends ArrowFeather {
     rectum () {
         return this._rectum;
     }
+    events () {
+        return this.rectum().data().events || null; // overwrite してね
+    }
     drawText (place, reafs) {
         const draw = (targets)=> {
             targets
@@ -31,6 +34,14 @@ export default class Reafs extends ArrowFeather {
         draw(selections
              .enter()
              .append("text")
+             .on("click", (e, d) => {
+                 const events = this.events();
+
+                 if (!events || !events.reaf || !events.reaf.click)
+                     return null;
+
+                 return events.reaf.click(d, e);
+             })
              .attr('class', 'reaf_label')
              .attr('code', (d)=> d.id()));
 

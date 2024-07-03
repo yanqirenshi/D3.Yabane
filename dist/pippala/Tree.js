@@ -52,6 +52,13 @@ var Tree = /*#__PURE__*/function () {
       return this._branches.ht[id] || null;
     }
   }, {
+    key: "reafsByBnraches",
+    value: function reafsByBnraches() {
+      return this._branches.list.reduce(function (list, b) {
+        return list.concat(b.sortedChildren());
+      }, []);
+    }
+  }, {
     key: "reafs",
     value: function reafs() {
       return this._reafs.list;

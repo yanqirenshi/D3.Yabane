@@ -1,4 +1,5 @@
 import Node from './Node.js';
+import dayjs from 'dayjs';
 
 //       -------------------------- ---------------------------------
 //      |      margin.t            |
@@ -27,6 +28,17 @@ export default class Branch extends Node {
     }
     children () {
         return this._children;
+    }
+    sortedChildren () {
+        return this.children().list.sort((a,b)=> {
+            if (a.plan().from < b.plan().from)
+                return -1;
+
+            if (a.plan().from > b.plan().from)
+                return 1;
+
+            return a.plan().to < b.plan().to ? -1 : 1;
+        });
     }
     w () {
         // TODO: this.styles() が null を返すとき。

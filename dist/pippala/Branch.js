@@ -9,6 +9,8 @@ exports.default = void 0;
 
 var _Node2 = _interopRequireDefault(require("./Node.js"));
 
+var _dayjs = _interopRequireDefault(require("dayjs"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -74,6 +76,15 @@ var Branch = /*#__PURE__*/function (_Node) {
     key: "children",
     value: function children() {
       return this._children;
+    }
+  }, {
+    key: "sortedChildren",
+    value: function sortedChildren() {
+      return this.children().list.sort(function (a, b) {
+        if (a.plan().from < b.plan().from) return -1;
+        if (a.plan().from > b.plan().from) return 1;
+        return a.plan().to < b.plan().to ? -1 : 1;
+      });
     }
   }, {
     key: "w",

@@ -64,6 +64,13 @@ export default function App() {
             },
             style: graph_style,
             tree: tree, // TODO: これは↓の useEffect じゃないかな
+            events: {
+                reaf: {
+                    click: (data, event)=> {
+                        console.log(['xx',data, event]);
+                    }
+                },
+            },
         });
     }, [data]);
 

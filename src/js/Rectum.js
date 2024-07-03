@@ -79,7 +79,7 @@ export default class Rectum extends Colon {
 
             // Reaf(Workpackage) の x, y, w, h を決める。
             let before_reaf = null;
-            for (const reaf of branch.children().list) {
+            for (const reaf of branch.sortedChildren()) {
                 reaf.styling(
                     graph_data.scale,
                     scale,

@@ -56,8 +56,15 @@ var Reafs = /*#__PURE__*/function (_ArrowFeather) {
       return this._rectum;
     }
   }, {
+    key: "events",
+    value: function events() {
+      return this.rectum().data().events || null; // overwrite してね
+    }
+  }, {
     key: "drawText",
     value: function drawText(place, reafs) {
+      var _this2 = this;
+
       var draw = function draw(targets) {
         targets.attr("x", function (d) {
           return d.x() + 33;
@@ -74,7 +81,12 @@ var Reafs = /*#__PURE__*/function (_ArrowFeather) {
 
       selections.exit().remove(); // add
 
-      draw(selections.enter().append("text").attr('class', 'reaf_label').attr('code', function (d) {
+      draw(selections.enter().append("text").on("click", function (e, d) {
+        var events = _this2.events();
+
+        if (!events || !events.reaf || !events.reaf.click) return null;
+        return events.reaf.click(d, e);
+      }).attr('class', 'reaf_label').attr('code', function (d) {
         return d.id();
       })); // update
 

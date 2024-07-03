@@ -152,7 +152,7 @@ var Rectum = /*#__PURE__*/function (_Colon) {
 
           var before_reaf = null;
 
-          var _iterator2 = _createForOfIteratorHelper(branch.children().list),
+          var _iterator2 = _createForOfIteratorHelper(branch.sortedChildren()),
               _step2;
 
           try {

@@ -17,8 +17,15 @@ var ArrowFeather = /*#__PURE__*/function () {
   }
 
   _createClass(ArrowFeather, [{
+    key: "events",
+    value: function events() {
+      return null; // overwrite してね
+    }
+  }, {
     key: "draw",
     value: function draw(place, data) {
+      var _this = this;
+
       var draw = function draw(targets) {
         targets.attr("points", function (d) {
           return d.pointsString();
@@ -31,7 +38,12 @@ var ArrowFeather = /*#__PURE__*/function () {
 
       selections.exit().remove(); // add
 
-      draw(selections.enter().append("polygon").attr('class', 'yabane').attr('code', function (d) {
+      draw(selections.enter().append("polygon").on("click", function (e, d) {
+        var events = _this.events();
+
+        if (!events || !events.reaf || !events.reaf.click) return null;
+        return events.reaf.click(d, e);
+      }).attr('class', 'yabane').attr('code', function (d) {
         return d.id();
       })); // update
 
