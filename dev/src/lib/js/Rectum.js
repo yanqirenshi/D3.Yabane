@@ -73,6 +73,7 @@ export default class Rectum extends Colon {
         const scale = this.scale();
 
         // Branch(WBS)  の x, y, w, h を決める。
+        // Workpackage を持っている
         let before_branch = null;
         for (const branch of graph_data.tree.branches()) {
             branch.styling(scale, style, before_branch);
