@@ -76,6 +76,14 @@ export default class Tree {
             parent_branch.addChild(reaf);
         }
 
+        const x = {};
+        for (const b of branches.list)
+            for (const c of b.children().list)
+                x[c.constructor.name] = true;
+
+        if (Object.keys(x).length>1)
+            throw new Error('children に Branch と Reaf は混在できません。');
+
         this._branches = branches;
         this._reafs = reafs;
 

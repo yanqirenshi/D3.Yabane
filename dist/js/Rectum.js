@@ -139,6 +139,7 @@ var Rectum = /*#__PURE__*/function (_Colon) {
       var style = graph_data.style;
       this.makeScale(graph_data.scale, style);
       var scale = this.scale(); // Branch(WBS)  の x, y, w, h を決める。
+      // Workpackage を持っている
 
       var before_branch = null;
 

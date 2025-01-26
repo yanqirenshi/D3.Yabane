@@ -143,6 +143,36 @@ var Tree = /*#__PURE__*/function () {
         _iterator2.f();
       }
 
+      var x = {};
+
+      var _iterator3 = _createForOfIteratorHelper(branches.list),
+          _step3;
+
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var b = _step3.value;
+
+          var _iterator4 = _createForOfIteratorHelper(b.children().list),
+              _step4;
+
+          try {
+            for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+              var c = _step4.value;
+              x[c.constructor.name] = true;
+            }
+          } catch (err) {
+            _iterator4.e(err);
+          } finally {
+            _iterator4.f();
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+
+      if (Object.keys(x).length > 1) throw new Error('children に Branch と Reaf は混在できません。');
       this._branches = branches;
       this._reafs = reafs;
       return this;
