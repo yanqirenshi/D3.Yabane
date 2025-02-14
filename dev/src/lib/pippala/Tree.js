@@ -27,6 +27,7 @@ export default class Tree {
         this._children.list.push(child);
     }
     compose (branches_data, reafs_data) {
+        // pool にオブジェクトを保管する。
         const fn = (pool, obj)=> {
             obj.tree(this);
 
