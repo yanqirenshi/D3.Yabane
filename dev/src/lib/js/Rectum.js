@@ -88,6 +88,21 @@ export default class Rectum extends Colon {
                 before_reaf = reaf;
             }
 
+            // Reaf 全体から Branch の 高さを決める。
+            let min_y = null;
+            let max_y = null;
+            let max_y_h = null;
+            for (const reaf of branch.sortedChildren()) {
+                const y = reaf.y();
+
+                if (min_y===null || min_y > y) min_y = y;
+                if (max_y===null || max_y < y) {
+                    max_y = y;
+                    max_y_h = reaf.h();
+                };
+                branch.h(max_y - min_y + max_y_h);
+            }
+
             before_branch = branch;
         }
 
@@ -119,5 +134,70 @@ export default class Rectum extends Colon {
         new PNow(this).draw(this.now());
 
         return this;
+    }
+}
+
+class stylingWorkpackages {
+    /**
+     * 矩形が被るものがないか確認する。 被る=true, 被らない=false
+     */
+    isPuton (wp, targets) {
+        for (const target of targets) {
+            const wp_l = wp.location();
+            const wp_s = wp.size();
+
+            const trg_l = target.location();
+            const trg_s = target.size();
+
+            if (Math.abs(wp_l.x - trg_l.x) < wp_s.w / 2 + trg_s.w / 2 &&
+                Math.abs(wp_l.y - trg_l.y) < wp_s.h / 2 + trg_s.h / 2)
+                return true;
+        }
+
+        return false;
+    }
+    /**
+     * Workpackage のチャートが被るかどうかを整える。(2/2)
+     */
+    layoutChildrenAddTemp (wp, tmp) {
+        for (const wp_list of tmp) {
+            // wp が 他 wp と被る場合、次(別)の段の確認に進む。
+            if (this.isPuton(wp, wp_list))
+                continue;
+
+            // wp が 他 wp と被らない場合、同じ段での表示にする。
+            wp_list.push(wp);
+
+            return;
+        }
+
+        // 全段被る場合は、新しい段を追加する。
+        tmp.push([wp]);
+    }
+    /**
+     * Workpackage のチャートが被るかどうかを整える。(1/2)
+     */
+    layoutChildrenMakeTmp (children) {
+        const func = (tmp, child)=>{
+
+            if (tmp.length===0) {
+                tmp.push([child]);
+                return tmp;
+            }
+
+            // tmp に child を追加する。
+            this.layoutChildrenAddTemp(child, tmp);
+
+            return tmp;
+        };
+
+        // tmp = [
+        //    [], 一段目
+        //    [], 二段目
+        //    :   n 段目
+        // ]
+        const tmp = [];
+
+        return children.reduce(func, tmp);
     }
 }

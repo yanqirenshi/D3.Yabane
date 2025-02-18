@@ -1,6 +1,6 @@
 {
     "name": "@yanqirenshi/d3.yabane",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "main": "dist/index.js",
     "dependencies": {
         "@yanqirenshi/d3.svg": "0.3.2",

@@ -23,14 +23,15 @@ export default class Reaf extends ArrowFeather {
         };
     }
     calY (branch, before) {
-        if (!before)
-            return branch.y();
+        return branch.y();
+        // if (!before)
+        //     return branch.y();
 
-        const styles = this.styles();
+        // const styles = this.styles();
 
-        const start = before.y() + before.h();
+        // const start = before.y() + before.h();
 
-        return start + styles.body.yabane.margin;
+        // return start + styles.body.yabane.margin;
     }
     styling (scale, timescale, styles, before) {
         // ここでセットするの？

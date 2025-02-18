@@ -161,11 +161,41 @@ var Rectum = /*#__PURE__*/function (_Colon) {
               var reaf = _step2.value;
               reaf.styling(graph_data.scale, scale, style, before_reaf);
               before_reaf = reaf;
-            }
+            } // Reaf 全体から Branch の 高さを決める。
+
           } catch (err) {
             _iterator2.e(err);
           } finally {
             _iterator2.f();
+          }
+
+          var min_y = null;
+          var max_y = null;
+          var max_y_h = null;
+
+          var _iterator3 = _createForOfIteratorHelper(branch.sortedChildren()),
+              _step3;
+
+          try {
+            for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+              var _reaf = _step3.value;
+
+              var y = _reaf.y();
+
+              if (min_y === null || min_y > y) min_y = y;
+
+              if (max_y === null || max_y < y) {
+                max_y = y;
+                max_y_h = _reaf.h();
+              }
+
+              ;
+              branch.h(max_y - min_y + max_y_h);
+            }
+          } catch (err) {
+            _iterator3.e(err);
+          } finally {
+            _iterator3.f();
           }
 
           before_branch = branch;
@@ -202,3 +232,97 @@ var Rectum = /*#__PURE__*/function (_Colon) {
 }(_assh0le.Colon);
 
 exports.default = Rectum;
+
+var stylingWorkpackages = /*#__PURE__*/function () {
+  function stylingWorkpackages() {
+    _classCallCheck(this, stylingWorkpackages);
+  }
+
+  _createClass(stylingWorkpackages, [{
+    key: "isPuton",
+    value:
+    /**
+     * 矩形が被るものがないか確認する。 被る=true, 被らない=false
+     */
+    function isPuton(wp, targets) {
+      var _iterator4 = _createForOfIteratorHelper(targets),
+          _step4;
+
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var target = _step4.value;
+          var wp_l = wp.location();
+          var wp_s = wp.size();
+          var trg_l = target.location();
+          var trg_s = target.size();
+          if (Math.abs(wp_l.x - trg_l.x) < wp_s.w / 2 + trg_s.w / 2 && Math.abs(wp_l.y - trg_l.y) < wp_s.h / 2 + trg_s.h / 2) return true;
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+
+      return false;
+    }
+    /**
+     * Workpackage のチャートが被るかどうかを整える。(2/2)
+     */
+
+  }, {
+    key: "layoutChildrenAddTemp",
+    value: function layoutChildrenAddTemp(wp, tmp) {
+      var _iterator5 = _createForOfIteratorHelper(tmp),
+          _step5;
+
+      try {
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var wp_list = _step5.value;
+          // wp が 他 wp と被る場合、次(別)の段の確認に進む。
+          if (this.isPuton(wp, wp_list)) continue; // wp が 他 wp と被らない場合、同じ段での表示にする。
+
+          wp_list.push(wp);
+          return;
+        } // 全段被る場合は、新しい段を追加する。
+
+      } catch (err) {
+        _iterator5.e(err);
+      } finally {
+        _iterator5.f();
+      }
+
+      tmp.push([wp]);
+    }
+    /**
+     * Workpackage のチャートが被るかどうかを整える。(1/2)
+     */
+
+  }, {
+    key: "layoutChildrenMakeTmp",
+    value: function layoutChildrenMakeTmp(children) {
+      var _this2 = this;
+
+      var func = function func(tmp, child) {
+        if (tmp.length === 0) {
+          tmp.push([child]);
+          return tmp;
+        } // tmp に child を追加する。
+
+
+        _this2.layoutChildrenAddTemp(child, tmp);
+
+        return tmp;
+      }; // tmp = [
+      //    [], 一段目
+      //    [], 二段目
+      //    :   n 段目
+      // ]
+
+
+      var tmp = [];
+      return children.reduce(func, tmp);
+    }
+  }]);
+
+  return stylingWorkpackages;
+}();
