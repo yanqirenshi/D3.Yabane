@@ -84,7 +84,8 @@ export default class Branch extends Node {
 
         const sytle_yabane = styles.body.yabane;
 
-        return len * sytle_yabane.h + (len - 1) * sytle_yabane.margin;
+        // return len * sytle_yabane.h + (len - 1) * sytle_yabane.margin;
+        return sytle_yabane.h;
     }
     styling (scale, styles, before) {
 

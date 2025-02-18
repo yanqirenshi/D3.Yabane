@@ -29,7 +29,7 @@ export default class Reaf extends ArrowFeather {
         const styles = this.styles();
 
         // const start = before.y() + before.h();
-        const start = before.y();
+        const start = styles.body.yabane.margin * -1;
 
         return start + styles.body.yabane.margin;
     }
