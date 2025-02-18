@@ -75,6 +75,7 @@ var Tree = /*#__PURE__*/function () {
     value: function compose(branches_data, reafs_data) {
       var _this = this;
 
+      // pool にオブジェクトを保管する。
       var fn = function fn(pool, obj) {
         obj.tree(_this);
         var id = obj.id();

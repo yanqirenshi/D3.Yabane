@@ -28,9 +28,11 @@ var Pippala = /*#__PURE__*/function () {
     key: "build",
     value: // constructor () {}
     function build(from, to, v) {
+      // term(fron, to) で wp を絞る。
       var filterd_wps = v.workpackages.filter(function (wp) {
         return isInTerm(from, to, wp.plan);
-      });
+      }); // ツリーを構築する。
+
       return new _Tree.default().compose(v.wbs, filterd_wps);
     }
   }]);
